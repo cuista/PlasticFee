@@ -20,7 +20,8 @@ import java.util.Set;
 @GRpcService
 public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
-    public static final Context.Key<User> CONTEXT_ROLE = Context.key("role_name"); //PER RICAVARE L'UTENTE
+    // To obtain the user
+    public static final Context.Key<User> CONTEXT_ROLE = Context.key("role_name");
 
     private final long millis = System.currentTimeMillis();
 
@@ -32,8 +33,10 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
     private static final int TOKEN_DIMENSION = 30;
 
-    private Set<StreamObserver<ChatResponse>> clients = Sets.newConcurrentHashSet(); //SET IN CUI CI SARA' UN ELENCO DI CLIENTS
-    //COLLEGATI ALLO STESSO SERVER PER UTILIZZARE LA CHAT
+    // A set where will be clients
+    private Set<StreamObserver<ChatResponse>> clients = Sets.newConcurrentHashSet();
+
+    // Connect to the same server to use the chat
 
     @Autowired
     private UserService userService;
@@ -48,6 +51,8 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         }catch (Exception e){
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("create user error").withCause(e).asRuntimeException());
         }
+
+        LOGGER.info("user {} creation OK!",request.getUsername());
     }
 
     @Override
@@ -60,13 +65,15 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
             //responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("user not exist!").asRuntimeException());
             throw new RuntimeException("user not exist");
         }
+
+        LOGGER.info("user get OK!");
     }
 
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
 
         try {
-            Optional<UserDto> userDto = userService.verifyUserRegistration(request.getUsername(), request.getPassword());
+            Optional<UserDto> userDto = userService.verifyUserCredentials(request.getUsername(), request.getPassword());
         }catch (RuntimeException e){
             responseObserver.onError(Status.fromCode(Status.NOT_FOUND.getCode()).withDescription("wrong username or password").asRuntimeException());
             return;

@@ -23,6 +23,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto createNewUser(String username,String password) {
+        if(!findByUsername(username).isEmpty())
+            throw new RuntimeException();
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setPassword(password);
@@ -39,7 +41,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> verifyUserRegistration(String username, String password) {
+    public Optional<UserDto> findByUsername(String username) {
+        Optional<UserEntity> userEntity = userDao.findByUsername(username);
+        if(userEntity.isPresent())
+            return Optional.of(modelMapper.map(userEntity.get(),UserDto.class));
+        throw new RuntimeException("user not exist");
+    }
+
+    @Override
+    public Optional<UserDto> verifyUserCredentials(String username, String password) {
         Optional<UserEntity> userEntity = userDao.findByUsernameAndPassword(username,password);
         if (userEntity.isPresent())
             return Optional.of(modelMapper.map(userEntity.get(),UserDto.class));

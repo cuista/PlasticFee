@@ -6,18 +6,26 @@ import "google/protobuf/timestamp.proto";
 
 service ChatService {
 
-  //PARTE USER
+  /* User Side */
+  // Server sends a response message on chat (signle, no stream)
+  rpc message(User) returns (Message);
 
-  rpc message(User) returns (Message); //INVIA MESSAGGIO SU CHAT (SINGOLO, NON STREAM)
-  rpc createUser(CreateUserRequest) returns(User); //CREA UN NUOVO UTENTE
-  rpc getUser(GetUserRequest) returns(User); //FA UN RETRIEVE DELLO STESSO UTENTE
+  // Create new user
+  rpc createUser(CreateUserRequest) returns(User);
+
+  // Do a retrieve of the user
+  rpc getUser(GetUserRequest) returns(User);
 
 
-  //PARTE CHAT
-  rpc login(LoginRequest) returns (LoginResponse); //ABILITA L'UTENTE AL LOGIN NELLA CHAT
-  rpc chat(stream ChatRequest) returns (stream ChatResponse); //ABILITA L'UTENTE A PARTECIPARE ALLA CHAT
+  /* Chat Side */
+  // Check user credentials
+  rpc login(LoginRequest) returns (LoginResponse);
+  // Allow user to write in the chat
+  rpc chat(stream ChatRequest) returns (stream ChatResponse);
+
 }
 
+// TODO FUTURE it will substitute ChatRequest and it will be renamed Transaction
 message Message {
   int64 id = 1;
   string content = 2;
@@ -27,7 +35,6 @@ message Message {
 message User {
   int64 id = 1;
   string username = 2;
-  string password = 3;
 }
 
 message CreateUserRequest{
@@ -59,8 +66,8 @@ message ChatResponse {
   oneof event{
     Login login_event = 2;
     Message message_event = 3;
-    //AGGIUNGERE SHUTDOWN
-    //AGGIUNGERE LOGOUT
+    //TODO Add Shutdown
+    //TODO Add logout
   }
 
   message Login {
@@ -73,28 +80,3 @@ message ChatResponse {
   }
 
 }
-
-/*
-message User {
-  string id = 1;
-  string name = 2;
-}
-
-message Message {
-  string id = 1;
-  string content = 2;
-  string timestamp = 3;
-}
-
-message Connect {
-  User user = 1;
-  bool active = 2;
-}
-
-message Close {}
-
-service Broadcast {
-  rpc CreateStream(Connect) returns (stream Message);
-  rpc BroadcastMessage(Message) returns (Close);
-}
-*/

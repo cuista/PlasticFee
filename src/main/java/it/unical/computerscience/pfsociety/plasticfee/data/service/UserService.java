@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface UserService {
     UserDto createNewUser(String username,String password);
     Optional<UserDto> findById(Long id);
-    Optional<UserDto> verifyUserRegistration(String username,String password);
+    Optional<UserDto> findByUsername(String username);
+    Optional<UserDto> verifyUserCredentials(String username,String password);
 }
