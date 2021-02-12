@@ -2,10 +2,20 @@ syntax = "proto3";
 option java_multiple_files = true;
 package it.unical.computerscience.pfsociety.plasticfee.protobuf.chat;
 
+import "google/protobuf/timestamp.proto";
+
 service ChatService {
-  rpc message(User) returns (Message);
-  rpc createUser(CreateUserRequest) returns(User);
-  rpc getUser(GetUserRequest) returns(User);
+
+  //PARTE USER
+
+  rpc message(User) returns (Message); //INVIA MESSAGGIO SU CHAT (SINGOLO, NON STREAM)
+  rpc createUser(CreateUserRequest) returns(User); //CREA UN NUOVO UTENTE
+  rpc getUser(GetUserRequest) returns(User); //FA UN RETRIEVE DELLO STESSO UTENTE
+
+
+  //PARTE CHAT
+  rpc login(LoginRequest) returns (LoginResponse); //ABILITA L'UTENTE AL LOGIN NELLA CHAT
+  rpc chat(stream ChatRequest) returns (stream ChatResponse); //ABILITA L'UTENTE A PARTECIPARE ALLA CHAT
 }
 
 message Message {
@@ -17,6 +27,7 @@ message Message {
 message User {
   int64 id = 1;
   string username = 2;
+  string password = 3;
 }
 
 message CreateUserRequest{
@@ -26,6 +37,41 @@ message CreateUserRequest{
 
 message GetUserRequest{
   int64 id=1;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  string token = 1;
+}
+
+message ChatRequest{
+  string message = 1;
+}
+
+message ChatResponse {
+
+  google.protobuf.Timestamp timestamp=1;
+
+  oneof event{
+    Login login_event = 2;
+    Message message_event = 3;
+    //AGGIUNGERE SHUTDOWN
+    //AGGIUNGERE LOGOUT
+  }
+
+  message Login {
+    string name = 1;
+  }
+
+  message Message {
+    string name = 1;
+    string message = 2;
+  }
+
 }
 
 /*

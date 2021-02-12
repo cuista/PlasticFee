@@ -17,7 +17,7 @@ public class ServiceTest {
     @Test
     public void testService(){
 
-        userService.createNewUser("aaaa1");
+        userService.createNewUser("aaaa1","AKAKAKAK");
 
     }
 

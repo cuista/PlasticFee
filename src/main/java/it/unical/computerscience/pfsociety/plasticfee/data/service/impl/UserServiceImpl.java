@@ -22,9 +22,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto createNewUser(String username) {
+    public UserDto createNewUser(String username,String password) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
+        userEntity.setPassword(password);
         userDao.save(userEntity);
         return (modelMapper.map(userEntity, UserDto.class));
     }
@@ -33,6 +34,14 @@ public class UserServiceImpl implements UserService {
     public Optional<UserDto> findById(Long id) {
         Optional<UserEntity> userEntity = userDao.findById(id);
         if(userEntity.isPresent())
+            return Optional.of(modelMapper.map(userEntity.get(),UserDto.class));
+        throw new RuntimeException("user not exist");
+    }
+
+    @Override
+    public Optional<UserDto> verifyUserRegistration(String username, String password) {
+        Optional<UserEntity> userEntity = userDao.findByUsernameAndPassword(username,password);
+        if (userEntity.isPresent())
             return Optional.of(modelMapper.map(userEntity.get(),UserDto.class));
         throw new RuntimeException("user not exist");
     }

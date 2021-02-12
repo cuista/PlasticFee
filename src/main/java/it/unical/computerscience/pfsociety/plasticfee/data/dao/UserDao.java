@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface UserDao extends JpaRepository<UserEntity,String>, JpaSpecificationExecutor<UserEntity> {
     Optional<UserEntity> findById(Long id);
+    Optional<UserEntity> findByUsernameAndPassword(String username,String password);
 }
