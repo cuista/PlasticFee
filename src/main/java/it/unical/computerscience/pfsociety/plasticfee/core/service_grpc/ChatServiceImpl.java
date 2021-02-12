@@ -88,6 +88,40 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
                 .build());
     }
 
+    @Override
+    public StreamObserver<ChatRequest> chat(StreamObserver<ChatResponse> responseObserver) {
+
+        clients.add(responseObserver);
+
+        return new StreamObserver<ChatRequest>() {
+            @Override
+            public void onNext(ChatRequest chatRequest) {
+                    LOGGER.info("got message from {} : {}",chatRequest.getUsername(),chatRequest.getMessage());
+
+                    broadCast(ChatResponse.newBuilder()
+                            .setTimestamp(currentTimestamp)
+                            .setMessageEvent(
+                                    ChatResponse.Message
+                                    .newBuilder()
+                                    .setMessage(chatRequest.getMessage())
+                                    .setName(chatRequest.getUsername())
+                                    .build()
+                            )
+                            .build());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                LOGGER.error("PROBLEMS IN THE CHAT SERVICE");
+            }
+
+            @Override
+            public void onCompleted() {
+                LOGGER.info("MESSAGE IN THE CHATSERVICEIMPL CORRECTLY SENT");
+            }
+        };
+    }
+
     /*@Override
     public void message(
             User userRequest, StreamObserver<Message> responseObserver) {
