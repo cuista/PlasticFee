@@ -94,6 +94,7 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         clients.add(responseObserver);
 
         return new StreamObserver<ChatRequest>() {
+
             @Override
             public void onNext(ChatRequest chatRequest) {
                     LOGGER.info("got message from {} : {}",chatRequest.getUsername(),chatRequest.getMessage());
@@ -117,9 +118,31 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
             @Override
             public void onCompleted() {
-                LOGGER.info("MESSAGE IN THE CHATSERVICEIMPL CORRECTLY SENT");
+                userLogout(responseObserver);
             }
         };
+    }
+
+    private void userLogout(StreamObserver<ChatResponse> responseObserver) {
+        clients.remove(responseObserver);
+
+        broadCast(ChatResponse.newBuilder()
+                .setTimestamp(currentTimestamp)
+                .setLogoutEvent(
+                        ChatResponse.Logout
+                                .newBuilder()
+                                .setUsername("prova 1")
+                        .build()
+                )
+                .build());
+    }
+
+
+    @Override
+    public void logout(LogoutRequest request, StreamObserver<LogoutResponse> responseObserver) {
+        LOGGER.info("user logout: {}; {} remaining in the chatroom", request.getUsername(),clients.size());
+        responseObserver.onNext(LogoutResponse.newBuilder().build());
+        responseObserver.onCompleted();
     }
 
     /*@Override

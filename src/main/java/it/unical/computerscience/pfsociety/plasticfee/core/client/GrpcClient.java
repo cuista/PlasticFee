@@ -83,6 +83,11 @@ public class GrpcClient {
                         LOGGER.error("receive event error: ", chatResponse);
                     }
                     break;
+                    case LOGOUT_EVENT:
+                    {
+                        LOGGER.info("A user just logged out");
+                    }
+                    break;
                 }
             }
 
@@ -99,9 +104,22 @@ public class GrpcClient {
     }
 
     public void sendMessage(String msg){
-        if (this.chat!=null){
+
+        if (msg.equals("exit")){
+            this.chat.onCompleted();
+            this.logout();
+            this.loggedUsername = null;
+            this.loggedIn = false;
+        }
+
+        else if (this.chat!=null){
             this.chat.onNext(ChatRequest.newBuilder().setUsername(this.loggedUsername).setMessage(msg).build());
         }
+    }
+
+    public void logout(){
+        LogoutResponse response = stub.logout(LogoutRequest.newBuilder().setUsername(loggedUsername).build());
+        LOGGER.info("logout executed for {}" , loggedUsername);
     }
 
     public static void main(String[] args) {
@@ -112,17 +130,13 @@ public class GrpcClient {
             client.login();
         }
 
-        String msg = client.s.nextLine();
+        String msg;
 
-        while(!msg.equals("exit")){
+        while(client.loggedIn){
             msg=client.s.nextLine();
             client.sendMessage(msg);
         }
 
-        //TODO gestione del logout senza errore
-
-        client.loggedUsername = null;
-        client.loggedIn = false;
         client.channel.shutdown();
     }
 }
