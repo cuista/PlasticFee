@@ -5,7 +5,9 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
+import it.unical.computerscience.pfsociety.plasticfee.data.service.ProposalService;
 import it.unical.computerscience.pfsociety.plasticfee.data.service.UserService;
 import it.unical.computerscience.pfsociety.plasticfee.protobuf.chat.*;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -13,6 +15,7 @@ import org.lognet.springboot.grpc.GRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +43,9 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProposalService proposalService;
 
     @Override
     public void createUser(CreateUserRequest request, StreamObserver<User> responseObserver) {
@@ -145,25 +151,39 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         responseObserver.onCompleted();
     }
 
-    /*@Override
-    public void message(
-            User userRequest, StreamObserver<Message> responseObserver) {
+    @Override
+    public void createProposal(CreateProposalRequest request, StreamObserver<Proposal> responseObserver) {
+        try {
+            ProposalDto proposalDto = proposalService.createProposal(request.getTitle(), request.getDescription(),request.getCreatorUsername());
+            responseObserver.onNext(toProtoProposal(proposalDto));
+            responseObserver.onCompleted();
+        }catch (Exception e){
+            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("create proposal error").withCause(e).asRuntimeException());
+        }
 
-        LOGGER.info("message id:{} username:{}",userRequest.getId(),userRequest.getUsername());
+        LOGGER.info("New proposal with title {} creation OK!",request.getTitle());
+        broadCast(ChatResponse.newBuilder()
+                .setTimestamp(currentTimestamp)
+                .setProposalEvent(ChatResponse.Proposal.newBuilder()
+                .setUsername(request.getCreatorUsername())
+                .setTitle(request.getTitle())
+                .build()).build());
+    }
 
-        //FIXME L'ENTITA' MESSAGE E' INUTILE?
-        MessageDto messageDto = new MessageDto();
-        messageDto.setContent("Hello, " + userRequest.getId() + " " + userRequest.getUsername());
-        messageDto.setTimestamp(LocalDateTime.of(LocalDate.now(),LocalTime.now()));
+    @Override
+    public void retrieveAllProposals(AllProposalsRequest request, StreamObserver<AllProposalsResponse> responseObserver) {
 
-        Message messageResponse = Message.newBuilder()
-                .setContent(messageDto.getContent())
-                .setTimestamp(LocalDateTime.of(LocalDate.now(), LocalTime.now()).toString())
-                .build();
+        List<ProposalDto> proposals = proposalService.retrieveAllProposals();
 
-        responseObserver.onNext(messageResponse);
+        AllProposalsResponse.Builder responseBuilder = AllProposalsResponse.newBuilder();
+
+        for (ProposalDto prop: proposals){
+            responseBuilder.addProposals(toProtoProposal(prop));
+        }
+
+        responseObserver.onNext(responseBuilder.build());
         responseObserver.onCompleted();
-    }*/
+    }
 
     private static User toProtoUser(UserDto userDto) {
         return User.newBuilder()
@@ -176,6 +196,14 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         for(StreamObserver<ChatResponse> resp : clients){
             resp.onNext(msg);
         }
+    }
+
+    private static Proposal toProtoProposal(ProposalDto proposalDto){
+        return Proposal.newBuilder()
+                .setTitle(proposalDto.getTitle())
+                .setDescription(proposalDto.getDescription())
+                .setCreatorUsername(proposalDto.getCreator().getUsername())
+                .build();
     }
 
 }
