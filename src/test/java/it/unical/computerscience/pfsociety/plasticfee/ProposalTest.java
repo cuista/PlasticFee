@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Timestamp;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProposalTest {
@@ -16,7 +18,8 @@ public class ProposalTest {
 
     @Test
     public void testSave(){
-        proposalService.createProposal("ciao","ciao","manuel95");
+        proposalService.createProposal("ciao","ciao","manuel95"
+                , new Timestamp(System.currentTimeMillis()));
 
         assert (proposalService.retrieveAllProposals().size() == 1);
 

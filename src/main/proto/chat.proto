@@ -6,23 +6,15 @@ import "google/protobuf/timestamp.proto";
 
 service ChatService {
 
-  /* User Side */
-  // Server sends a response message on chat (signle, no stream)
-  rpc message(User) returns (Message);
-
   // Create new user
   rpc createUser(CreateUserRequest) returns(User);
 
   // Do a retrieve of the user
   rpc getUser(GetUserRequest) returns(User);
 
-
-  /* Chat Side */
+  /* Client Side */
   // Check user credentials
   rpc login(LoginRequest) returns (LoginResponse);
-
-  // Allow user to write in the chat
-  rpc chat(stream ChatRequest) returns (stream ChatResponse);
 
   //Allows user to logout from the chat
   rpc logout(LogoutRequest) returns (LogoutResponse);
@@ -52,18 +44,9 @@ message Proposal {
   string title = 1;
   string description = 2;
   string creatorUsername = 3;
-
 }
 
 // TODO codici delle response HTTP
-
-// TODO FUTURE it will substitute ChatRequest and it will be renamed Transaction
-message Message {
-  int64 id = 1;
-  string content = 2;
-  string timestamp = 3;
-}
-
 message User {
   int64 id = 1;
   string username = 2;
@@ -85,43 +68,6 @@ message LoginRequest {
 
 message LoginResponse{
   string token = 1;
-}
-
-message ChatRequest{
-  string message = 1;
-  string username = 2;
-}
-
-message ChatResponse {
-
-  google.protobuf.Timestamp timestamp=1;
-
-  oneof event{
-    Login login_event = 2;
-    Message message_event = 3;
-    Logout logout_event = 4;
-    Proposal proposal_event = 5;
-    //TODO Add Shutdown
-  }
-
-  message Login {
-    string name = 1;
-  }
-
-  message Message {
-    string name = 1;
-    string message = 2;
-  }
-
-  message Logout {
-    string username = 1;
-  }
-
-  message Proposal {
-    string username = 1;
-    string title = 2;
-  }
-
 }
 
 message LogoutRequest {

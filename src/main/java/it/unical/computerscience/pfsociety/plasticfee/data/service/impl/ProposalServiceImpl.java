@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     @Override
-    public ProposalDto createProposal(String title, String description, String creatorUsername) {
+    public ProposalDto createProposal(String title, String description, String creatorUsername, Timestamp creationTimestamp) {
 
         if (proposalDao.findByTitleEquals(title).isPresent() || proposalDao.findByDescriptionEquals(description).isPresent()){
             throw new RuntimeException("A proposal with these data is already present");
@@ -48,6 +49,7 @@ public class ProposalServiceImpl implements ProposalService {
         proposalEntity.setTitle(title);
         proposalEntity.setDescription(description);
         proposalEntity.setProposalCreator(user);
+        proposalEntity.setCreationTimestamp(creationTimestamp);
         proposalDao.save(proposalEntity);
 
         return modelMapper.map(proposalEntity,ProposalDto.class);

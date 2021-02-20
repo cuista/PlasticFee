@@ -1,6 +1,7 @@
 package it.unical.computerscience.pfsociety.plasticfee.data.entity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "PROPOSAL")
@@ -16,6 +17,9 @@ public class ProposalEntity {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @Column(name = "CREATION_TIMESTAMP")
+    private Timestamp creationTimestamp;
 
     @ManyToOne
     @JoinColumn(name = "CREATOR_ID",referencedColumnName = "ID")
@@ -52,6 +56,14 @@ public class ProposalEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Timestamp getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public void setCreationTimestamp(Timestamp creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 
     public UserEntity getProposalCreator() {

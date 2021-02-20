@@ -1,8 +1,5 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service_grpc;
 
-import com.google.common.collect.Sets;
-import com.google.protobuf.Timestamp;
-import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
@@ -15,31 +12,18 @@ import org.lognet.springboot.grpc.GRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @GRpcService
 public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
-
-    // To obtain the user
-    public static final Context.Key<User> CONTEXT_ROLE = Context.key("role_name");
-
-    private final long millis = System.currentTimeMillis();
-
-    private final Timestamp currentTimestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
-            .setNanos((int) ((millis % 1000) * 1000000)).build();
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(ChatServiceImpl.class);
 
     private static final int TOKEN_DIMENSION = 30;
-
-    // A set where will be clients
-    private Set<StreamObserver<ChatResponse>> clients = Sets.newConcurrentHashSet();
-
-    // Connect to the same server to use the chat
 
     @Autowired
     private UserService userService;
@@ -68,7 +52,6 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
             responseObserver.onNext(toProtoUser(userDto.get()));
             responseObserver.onCompleted();
         }else{
-            //responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("user not exist!").asRuntimeException());
             throw new RuntimeException("user not exist");
         }
 
@@ -89,64 +72,12 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         responseObserver.onCompleted();
 
         LOGGER.info("user {} login OK!",request.getUsername());
-        broadCast(ChatResponse.newBuilder().setTimestamp(currentTimestamp)
-                .setLoginEvent(ChatResponse.Login.newBuilder().setName(request.getUsername()).build())
-                .build());
-    }
-
-    @Override
-    public StreamObserver<ChatRequest> chat(StreamObserver<ChatResponse> responseObserver) {
-
-        clients.add(responseObserver);
-
-        return new StreamObserver<ChatRequest>() {
-
-            @Override
-            public void onNext(ChatRequest chatRequest) {
-                    LOGGER.info("got message from {} : {}",chatRequest.getUsername(),chatRequest.getMessage());
-
-                    broadCast(ChatResponse.newBuilder()
-                            .setTimestamp(currentTimestamp)
-                            .setMessageEvent(
-                                    ChatResponse.Message
-                                    .newBuilder()
-                                    .setMessage(chatRequest.getMessage())
-                                    .setName(chatRequest.getUsername())
-                                    .build()
-                            )
-                            .build());
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                LOGGER.error("PROBLEMS IN THE CHAT SERVICE");
-            }
-
-            @Override
-            public void onCompleted() {
-                userLogout(responseObserver);
-            }
-        };
-    }
-
-    private void userLogout(StreamObserver<ChatResponse> responseObserver) {
-        clients.remove(responseObserver);
-
-        broadCast(ChatResponse.newBuilder()
-                .setTimestamp(currentTimestamp)
-                .setLogoutEvent(
-                        ChatResponse.Logout
-                                .newBuilder()
-                                .setUsername("prova 1")
-                        .build()
-                )
-                .build());
     }
 
 
     @Override
     public void logout(LogoutRequest request, StreamObserver<LogoutResponse> responseObserver) {
-        LOGGER.info("user logout: {}; {} remaining in the chatroom", request.getUsername(),clients.size());
+        LOGGER.info("user logout: {}", request.getUsername());
         responseObserver.onNext(LogoutResponse.newBuilder().build());
         responseObserver.onCompleted();
     }
@@ -154,7 +85,8 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
     @Override
     public void createProposal(CreateProposalRequest request, StreamObserver<Proposal> responseObserver) {
         try {
-            ProposalDto proposalDto = proposalService.createProposal(request.getTitle(), request.getDescription(),request.getCreatorUsername());
+            ProposalDto proposalDto = proposalService.createProposal(request.getTitle(), request.getDescription(),
+                    request.getCreatorUsername(),new Timestamp(System.currentTimeMillis()));
             responseObserver.onNext(toProtoProposal(proposalDto));
             responseObserver.onCompleted();
         }catch (Exception e){
@@ -162,12 +94,6 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         }
 
         LOGGER.info("New proposal with title {} creation OK!",request.getTitle());
-        broadCast(ChatResponse.newBuilder()
-                .setTimestamp(currentTimestamp)
-                .setProposalEvent(ChatResponse.Proposal.newBuilder()
-                .setUsername(request.getCreatorUsername())
-                .setTitle(request.getTitle())
-                .build()).build());
     }
 
     @Override
@@ -190,12 +116,6 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
                 .setId(userDto.getId())
                 .setUsername(userDto.getUsername())
                 .build();
-    }
-
-    private void broadCast(ChatResponse msg){
-        for(StreamObserver<ChatResponse> resp : clients){
-            resp.onNext(msg);
-        }
     }
 
     private static Proposal toProtoProposal(ProposalDto proposalDto){
