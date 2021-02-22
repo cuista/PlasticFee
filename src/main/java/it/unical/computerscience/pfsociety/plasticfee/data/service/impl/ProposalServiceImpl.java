@@ -6,11 +6,13 @@ import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.service.ProposalService;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +29,15 @@ public class ProposalServiceImpl implements ProposalService {
     ModelMapper modelMapper;
 
     @Override
-    public List<ProposalDto> retrieveAllProposals() {
+    public List<ProposalDto> retrieveAllActiveProposals() {
 
-        List<ProposalEntity> proposals = proposalDao.findAll();
+        List<ProposalEntity> proposals = proposalDao.findByActiveIsTrue();
 
         return proposals.stream().map(proposal -> modelMapper.map(proposal,ProposalDto.class)).collect(Collectors.toList());
-
     }
 
     @Override
-    public ProposalDto createProposal(String title, String description, String creatorUsername, Timestamp creationTimestamp) {
+    public ProposalDto createProposal(String title, String description, String creatorUsername, LocalDateTime localDateTime) {
 
         if (proposalDao.findByTitleEquals(title).isPresent() || proposalDao.findByDescriptionEquals(description).isPresent()){
             throw new RuntimeException("A proposal with these data is already present");
@@ -49,11 +50,25 @@ public class ProposalServiceImpl implements ProposalService {
         proposalEntity.setTitle(title);
         proposalEntity.setDescription(description);
         proposalEntity.setProposalCreator(user);
-        proposalEntity.setCreationTimestamp(creationTimestamp);
+        proposalEntity.setCreationDateTime(localDateTime);
+        proposalEntity.setActive(true);
         proposalDao.save(proposalEntity);
 
         return modelMapper.map(proposalEntity,ProposalDto.class);
 
+
+    }
+
+    @Override
+    public void verifyProposalsExpiration() {
+
+        List<ProposalDto> proposals = retrieveAllActiveProposals();
+
+        for (ProposalDto p: proposals){
+            if (Duration.between(p.getCreationDateTime(),LocalDateTime.now()).toSeconds()>=5){
+                proposalDao.setProposalAsExpired(p.getId());
+            }
+        }
 
     }
 }

@@ -23,7 +23,18 @@ service ChatService {
   rpc createProposal(CreateProposalRequest) returns (Proposal);
 
   //Allows to retrieve all proposals
-  rpc retrieveAllProposals(AllProposalsRequest) returns (AllProposalsResponse);
+  rpc retrieveAllProposals(AllProposalsRequest) returns (AllProposalsResponse); //FIXME rinominare metodo in allActive
+
+  //Updates the validity of proposals
+  rpc updateProposalsValidity(UpdateValidityRequest) returns (UpdateValidityResponse);
+}
+
+message UpdateValidityRequest{
+
+}
+
+message UpdateValidityResponse{
+
 }
 
 message AllProposalsRequest{
@@ -38,12 +49,14 @@ message CreateProposalRequest {
   string title = 1;
   string description = 2;
   string creatorUsername = 3;
+
 }
 
 message Proposal {
   string title = 1;
   string description = 2;
   string creatorUsername = 3;
+  google.protobuf.Timestamp creationTimestamp= 4;
 }
 
 // TODO codici delle response HTTP

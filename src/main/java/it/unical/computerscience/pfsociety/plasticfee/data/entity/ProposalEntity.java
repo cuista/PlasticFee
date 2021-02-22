@@ -1,7 +1,8 @@
 package it.unical.computerscience.pfsociety.plasticfee.data.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PROPOSAL")
@@ -18,8 +19,11 @@ public class ProposalEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "CREATION_TIMESTAMP")
-    private Timestamp creationTimestamp;
+    @Column(name = "CREATION_DATETIME")
+    private LocalDateTime creationDateTime;
+
+    @Column(name = "IS_ACTIVE")
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "CREATOR_ID",referencedColumnName = "ID")
@@ -32,7 +36,6 @@ public class ProposalEntity {
     public ProposalEntity() {
 
     }
-
 
     public Long getId() {
         return id;
@@ -58,12 +61,12 @@ public class ProposalEntity {
         this.description = description;
     }
 
-    public Timestamp getCreationTimestamp() {
-        return creationTimestamp;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setCreationTimestamp(Timestamp creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UserEntity getProposalCreator() {
@@ -72,5 +75,13 @@ public class ProposalEntity {
 
     public void setProposalCreator(UserEntity proposalCreator) {
         this.proposalCreator = proposalCreator;
+    }
+
+    public LocalDateTime getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public void setCreationDateTime(LocalDateTime creationDateTime) {
+        this.creationDateTime = creationDateTime;
     }
 }

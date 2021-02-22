@@ -1,6 +1,5 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.client;
 
-import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -72,10 +71,16 @@ public class GrpcClient {
 
         printHeaders();
 
+        updateProposalsValidity();
+
         List<Proposal> proposals = stub.retrieveAllProposals(AllProposalsRequest.newBuilder().build()).getProposalsList();
 
         proposals.stream().forEach(p ->
                 System.out.printf("%-24s %-32s %s\n",p.getTitle(),p.getDescription(),p.getCreatorUsername()));
+    }
+
+    private void updateProposalsValidity() {
+        stub.updateProposalsValidity(UpdateValidityRequest.newBuilder().build());
     }
 
     private void createNewProposal(){

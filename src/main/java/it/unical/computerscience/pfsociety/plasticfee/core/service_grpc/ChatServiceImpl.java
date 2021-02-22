@@ -1,5 +1,6 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service_grpc;
 
+import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +87,7 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
     public void createProposal(CreateProposalRequest request, StreamObserver<Proposal> responseObserver) {
         try {
             ProposalDto proposalDto = proposalService.createProposal(request.getTitle(), request.getDescription(),
-                    request.getCreatorUsername(),new Timestamp(System.currentTimeMillis()));
+                    request.getCreatorUsername(), LocalDateTime.now());
             responseObserver.onNext(toProtoProposal(proposalDto));
             responseObserver.onCompleted();
         }catch (Exception e){
@@ -99,7 +100,7 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
     @Override
     public void retrieveAllProposals(AllProposalsRequest request, StreamObserver<AllProposalsResponse> responseObserver) {
 
-        List<ProposalDto> proposals = proposalService.retrieveAllProposals();
+        List<ProposalDto> proposals = proposalService.retrieveAllActiveProposals();
 
         AllProposalsResponse.Builder responseBuilder = AllProposalsResponse.newBuilder();
 
@@ -111,6 +112,17 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void updateProposalsValidity(UpdateValidityRequest request, StreamObserver<UpdateValidityResponse> responseObserver) {
+
+        proposalService.verifyProposalsExpiration();
+
+        responseObserver.onNext(UpdateValidityResponse.newBuilder().build());
+        responseObserver.onCompleted();
+
+        LOGGER.info("Proposals validity correctly updated");
+    }
+
     private static User toProtoUser(UserDto userDto) {
         return User.newBuilder()
                 .setId(userDto.getId())
@@ -119,10 +131,15 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
     }
 
     private static Proposal toProtoProposal(ProposalDto proposalDto){
+
+        LOGGER.info(proposalDto.getCreationDateTime().toString());
+
         return Proposal.newBuilder()
                 .setTitle(proposalDto.getTitle())
                 .setDescription(proposalDto.getDescription())
                 .setCreatorUsername(proposalDto.getCreator().getUsername())
+                .setCreationTimestamp(Timestamp.newBuilder().setSeconds(proposalDto.getCreationDateTime().getSecond())
+                                        .setNanos(proposalDto.getCreationDateTime().getNano()).build())
                 .build();
     }
 
