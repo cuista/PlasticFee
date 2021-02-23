@@ -1,10 +1,10 @@
 syntax = "proto3";
 option java_multiple_files = true;
-package it.unical.computerscience.pfsociety.plasticfee.protobuf.chat;
+package it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal;
 
 import "google/protobuf/timestamp.proto";
 
-service ChatService {
+service ProposalService {
 
   // Create new user
   rpc createUser(CreateUserRequest) returns(User);
@@ -27,6 +27,9 @@ service ChatService {
 
   //Updates the validity of proposals
   rpc updateProposalsValidity(UpdateValidityRequest) returns (UpdateValidityResponse);
+
+  //Allows user to vote an active proposal
+  rpc voteActiveProposal(VoteActiveProposalRequest) returns (VoteActiveProposalResponse);
 }
 
 message UpdateValidityRequest{
@@ -37,7 +40,17 @@ message UpdateValidityResponse{
 
 }
 
-message AllProposalsRequest{
+message AllProposalsRequest{ //FIXME rinominare metodo in allActive
+
+}
+
+message VoteActiveProposalRequest{
+  string title = 1;
+  string username = 2;
+  bool isInFavor = 3;
+}
+
+message VoteActiveProposalResponse{
 
 }
 
@@ -52,11 +65,18 @@ message CreateProposalRequest {
 
 }
 
+message Vote {
+  int64 id = 1;
+  bool isInFavor = 2;
+}
+
 message Proposal {
-  string title = 1;
-  string description = 2;
-  string creatorUsername = 3;
-  google.protobuf.Timestamp creationTimestamp= 4;
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  string creatorUsername = 4;
+  google.protobuf.Timestamp creationTimestamp= 5;
+  repeated Vote votesList = 6;
 }
 
 // TODO codici delle response HTTP

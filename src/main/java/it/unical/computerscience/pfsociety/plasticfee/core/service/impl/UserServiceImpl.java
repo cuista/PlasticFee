@@ -1,9 +1,9 @@
-package it.unical.computerscience.pfsociety.plasticfee.data.service.impl;
+package it.unical.computerscience.pfsociety.plasticfee.core.service.impl;
 
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
-import it.unical.computerscience.pfsociety.plasticfee.data.service.UserService;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package it.unical.computerscience.pfsociety.plasticfee.data.service;
+package it.unical.computerscience.pfsociety.plasticfee.core.service;
 
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
 import org.springframework.stereotype.Component;

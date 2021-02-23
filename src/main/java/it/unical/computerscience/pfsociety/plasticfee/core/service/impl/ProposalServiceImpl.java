@@ -1,12 +1,12 @@
-package it.unical.computerscience.pfsociety.plasticfee.data.service.impl;
+package it.unical.computerscience.pfsociety.plasticfee.core.service.impl;
 
+import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.ProposalByTitleNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.ProposalDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
-import it.unical.computerscience.pfsociety.plasticfee.data.service.ProposalService;
-import org.apache.tomcat.jni.Local;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +34,11 @@ public class ProposalServiceImpl implements ProposalService {
         List<ProposalEntity> proposals = proposalDao.findByActiveIsTrue();
 
         return proposals.stream().map(proposal -> modelMapper.map(proposal,ProposalDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public ProposalDto retrieveActiveProposalByTitle(String title) {
+        return modelMapper.map(proposalDao.findByActiveIsTrueAndTitleEquals(title).orElseThrow(() -> new ProposalByTitleNotFoundOnRetrieveException(title)),ProposalDto.class);
     }
 
     @Override
@@ -65,10 +70,12 @@ public class ProposalServiceImpl implements ProposalService {
         List<ProposalDto> proposals = retrieveAllActiveProposals();
 
         for (ProposalDto p: proposals){
-            if (Duration.between(p.getCreationDateTime(),LocalDateTime.now()).toSeconds()>=5){
+            if (Duration.between(p.getCreationDateTime(),LocalDateTime.now()).toMinutes()>=10){
                 proposalDao.setProposalAsExpired(p.getId());
             }
         }
 
     }
+
+
 }

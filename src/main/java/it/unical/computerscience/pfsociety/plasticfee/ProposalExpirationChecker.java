@@ -1,6 +1,6 @@
 package it.unical.computerscience.pfsociety.plasticfee;
 
-import it.unical.computerscience.pfsociety.plasticfee.data.service.ProposalService;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProposalExpirationChecker extends Thread{

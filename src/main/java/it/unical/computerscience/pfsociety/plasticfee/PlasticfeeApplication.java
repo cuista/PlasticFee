@@ -15,27 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootApplication
-public class PlasticfeeApplication implements CommandLineRunner {
-
-	@Autowired
-	private ApplicationContext applicationContext;
+public class PlasticfeeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PlasticfeeApplication.class, args);
-
-
 	}
-
-	@Override
-	public void run(String...args) throws Exception {
-
-		ProposalExpirationChecker checker = new ProposalExpirationChecker();
-
-		applicationContext.getAutowireCapableBeanFactory().autowireBean(checker);
-
-		//checker.start();
-
-	}
-
 
 }

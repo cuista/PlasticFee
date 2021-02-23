@@ -1,13 +1,19 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service_grpc;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
-import it.unical.computerscience.pfsociety.plasticfee.data.service.ProposalService;
-import it.unical.computerscience.pfsociety.plasticfee.data.service.UserService;
-import it.unical.computerscience.pfsociety.plasticfee.protobuf.chat.*;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.UserService;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.VoteService;
+import it.unical.computerscience.pfsociety.plasticfee.data.dto.VoteDto;
+import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity;
+import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
+import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.*;
+import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.ProposalServiceGrpc;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lognet.springboot.grpc.GRpcService;
 import org.slf4j.Logger;
@@ -17,12 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @GRpcService
-public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
+public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalServiceImplBase {
 
     private static final Logger LOGGER =
-            LoggerFactory.getLogger(ChatServiceImpl.class);
+            LoggerFactory.getLogger(ProposalGrpcServiceImpl.class);
 
     private static final int TOKEN_DIMENSION = 30;
 
@@ -31,6 +38,9 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
     @Autowired
     private ProposalService proposalService;
+
+    @Autowired
+    private VoteService voteService;
 
     @Override
     public void createUser(CreateUserRequest request, StreamObserver<User> responseObserver) {
@@ -92,6 +102,7 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
             responseObserver.onCompleted();
         }catch (Exception e){
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("create proposal error").withCause(e).asRuntimeException());
+            LOGGER.info("FAILED to create new proposal {} ERROR!",request.getTitle());
         }
 
         LOGGER.info("New proposal with title {} creation OK!",request.getTitle());
@@ -123,6 +134,18 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
         LOGGER.info("Proposals validity correctly updated");
     }
 
+    @Override
+    public void voteActiveProposal(VoteActiveProposalRequest request, StreamObserver<VoteActiveProposalResponse> responseObserver) {
+
+        boolean isVoteAdded = voteService.addVote(request.getIsInFavor(), request.getTitle(), request.getUsername());
+
+        responseObserver.onNext(VoteActiveProposalResponse.newBuilder().build());
+        responseObserver.onCompleted();
+
+        LOGGER.info(isVoteAdded?"{} added a vote to proposal {}":"{} FAILED to add a vote to proposal {}",request.getUsername(),request.getTitle());
+
+    }
+
     private static User toProtoUser(UserDto userDto) {
         return User.newBuilder()
                 .setId(userDto.getId())
@@ -130,16 +153,27 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
                 .build();
     }
 
-    private static Proposal toProtoProposal(ProposalDto proposalDto){
+    private static Proposal toProtoProposal(ProposalDto proposalDto) {
 
-        LOGGER.info(proposalDto.getCreationDateTime().toString());
-
-        return Proposal.newBuilder()
+        Proposal.Builder proposalBuilder = Proposal.newBuilder();
+        proposalBuilder.setId(proposalDto.getId())
                 .setTitle(proposalDto.getTitle())
                 .setDescription(proposalDto.getDescription())
                 .setCreatorUsername(proposalDto.getCreator().getUsername())
                 .setCreationTimestamp(Timestamp.newBuilder().setSeconds(proposalDto.getCreationDateTime().getSecond())
-                                        .setNanos(proposalDto.getCreationDateTime().getNano()).build())
+                        .setNanos(proposalDto.getCreationDateTime().getNano()).build());
+
+        for (VoteDto voteDto:proposalDto.getVotesList()) {
+            proposalBuilder.addVotesList(toProtoVote(voteDto));
+        }
+
+        return proposalBuilder.build();
+    }
+
+    private static Vote toProtoVote(VoteDto voteDto) {
+        return Vote.newBuilder()
+                .setId(voteDto.getId())
+                .setIsInFavor(voteDto.getInFavor())
                 .build();
     }
 

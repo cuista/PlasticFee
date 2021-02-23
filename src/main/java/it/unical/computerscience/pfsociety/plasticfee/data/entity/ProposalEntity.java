@@ -3,9 +3,13 @@ package it.unical.computerscience.pfsociety.plasticfee.data.entity;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "PROPOSAL")
+@Table(name = "PFE_PROPOSAL")
 public class ProposalEntity {
 
     @Id
@@ -13,7 +17,7 @@ public class ProposalEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "TITLE")
+    @Column(name = "TITLE", unique = true)
     private String title;
 
     @Column(name = "DESCRIPTION")
@@ -26,15 +30,13 @@ public class ProposalEntity {
     private boolean active;
 
     @ManyToOne
-    @JoinColumn(name = "CREATOR_ID",referencedColumnName = "ID")
+    @JoinColumn(name = "CREATOR_ID", referencedColumnName = "ID")
     private UserEntity proposalCreator;
 
-    //TODO one to many hashset utenti a favore
-
-    //TODO one to many hashset utenti a sfavore
+    @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<VoteEntity> votesList = new HashSet<>();
 
     public ProposalEntity() {
-
     }
 
     public Long getId() {
@@ -84,4 +86,8 @@ public class ProposalEntity {
     public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
+
+    public Set<VoteEntity> getVotesList() { return votesList; }
+
+    public void setVotesList(Set<VoteEntity> votesList) { this.votesList = votesList; }
 }

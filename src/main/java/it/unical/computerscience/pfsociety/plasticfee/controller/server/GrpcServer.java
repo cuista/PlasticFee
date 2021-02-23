@@ -1,8 +1,8 @@
-package it.unical.computerscience.pfsociety.plasticfee.core.server;
+package it.unical.computerscience.pfsociety.plasticfee.controller.server;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import it.unical.computerscience.pfsociety.plasticfee.core.service_grpc.ChatServiceImpl;
+import it.unical.computerscience.pfsociety.plasticfee.core.service_grpc.ProposalGrpcServiceImpl;
 import org.lognet.springboot.grpc.GRpcService;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class GrpcServer {
         public static void main(String[] args) throws IOException, InterruptedException {
             Server server = ServerBuilder
                     .forPort(8070)
-                    .addService(new ChatServiceImpl()).build();
+                    .addService(new ProposalGrpcServiceImpl()).build();
 
             server.start();
             server.awaitTermination();

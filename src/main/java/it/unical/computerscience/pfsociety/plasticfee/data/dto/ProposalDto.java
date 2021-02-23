@@ -1,9 +1,12 @@
 package it.unical.computerscience.pfsociety.plasticfee.data.dto;
 
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
+import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProposalDto implements Serializable {
 
@@ -17,11 +20,11 @@ public class ProposalDto implements Serializable {
 
     private boolean active;
 
-    private UserEntity creator;
+    private UserDto creator;
 
-    public ProposalDto() {
+    private Set<VoteDto> votesList = new HashSet<>();
 
-    }
+    public ProposalDto() {}
 
     public Long getId() {
         return id;
@@ -63,11 +66,17 @@ public class ProposalDto implements Serializable {
         this.active = active;
     }
 
-    public UserEntity getCreator() {
+    public UserDto getCreator() {
         return creator;
     }
 
-    public void setCreator(UserEntity creator) {
+    public void setCreator(UserDto creator) {
         this.creator = creator;
+    }
+
+    public Set<VoteDto> getVotesList() { return votesList; }
+
+    public void setVotesList(Set<VoteDto> votesList) {
+        this.votesList = votesList;
     }
 }
