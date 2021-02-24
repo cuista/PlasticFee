@@ -109,11 +109,11 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
     }
 
     @Override
-    public void retrieveAllProposals(AllProposalsRequest request, StreamObserver<AllProposalsResponse> responseObserver) {
+    public void retrieveAllActiveProposals(AllActiveProposalsRequest request, StreamObserver<AllActiveProposalsResponse> responseObserver) {
 
         List<ProposalDto> proposals = proposalService.retrieveAllActiveProposals();
 
-        AllProposalsResponse.Builder responseBuilder = AllProposalsResponse.newBuilder();
+        AllActiveProposalsResponse.Builder responseBuilder = AllActiveProposalsResponse.newBuilder();
 
         for (ProposalDto prop: proposals){
             responseBuilder.addProposals(toProtoProposal(prop));
@@ -121,17 +121,6 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
 
         responseObserver.onNext(responseBuilder.build());
         responseObserver.onCompleted();
-    }
-
-    @Override
-    public void updateProposalsValidity(UpdateValidityRequest request, StreamObserver<UpdateValidityResponse> responseObserver) {
-
-        proposalService.verifyProposalsExpiration();
-
-        responseObserver.onNext(UpdateValidityResponse.newBuilder().build());
-        responseObserver.onCompleted();
-
-        LOGGER.info("Proposals validity correctly updated");
     }
 
     @Override

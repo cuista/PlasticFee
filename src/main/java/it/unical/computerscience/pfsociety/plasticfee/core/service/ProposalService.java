@@ -10,6 +10,6 @@ public interface ProposalService {
 
     List<ProposalDto> retrieveAllActiveProposals();
     ProposalDto createProposal(String title, String description, String creatorUsername, LocalDateTime creationDateTime);
-    void verifyProposalsExpiration(); //FIXME OSSESSIVO COMPULSIVO: add AndUpdateIfNeeded to method's name
+    void verifyProposalsExpirationAndUpdateIfNeeded();
     ProposalDto retrieveActiveProposalByTitle(String title);
 }

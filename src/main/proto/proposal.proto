@@ -23,25 +23,18 @@ service ProposalService {
   rpc createProposal(CreateProposalRequest) returns (Proposal);
 
   //Allows to retrieve all proposals
-  rpc retrieveAllProposals(AllProposalsRequest) returns (AllProposalsResponse); //FIXME rinominare metodo in allActive
-
-  //Updates the validity of proposals
-  rpc updateProposalsValidity(UpdateValidityRequest) returns (UpdateValidityResponse);
+  rpc retrieveAllActiveProposals(AllActiveProposalsRequest) returns (AllActiveProposalsResponse); //FIXME rinominare metodo in allActive
 
   //Allows user to vote an active proposal
   rpc voteActiveProposal(VoteActiveProposalRequest) returns (VoteActiveProposalResponse);
 }
 
-message UpdateValidityRequest{
+message AllActiveProposalsRequest{ //FIXME rinominare metodo in allActive
 
 }
 
-message UpdateValidityResponse{
-
-}
-
-message AllProposalsRequest{ //FIXME rinominare metodo in allActive
-
+message AllActiveProposalsResponse{
+  repeated Proposal proposals = 1;
 }
 
 message VoteActiveProposalRequest{
@@ -52,10 +45,6 @@ message VoteActiveProposalRequest{
 
 message VoteActiveProposalResponse{
 
-}
-
-message AllProposalsResponse{
-  repeated Proposal proposals = 1;
 }
 
 message CreateProposalRequest {

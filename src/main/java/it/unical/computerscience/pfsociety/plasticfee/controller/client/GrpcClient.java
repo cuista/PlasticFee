@@ -65,7 +65,8 @@ public class GrpcClient {
 
         System.out.println("Insert your password: ");
 
-        password = scanner.nextLine().strip();
+        Console console = System.console();
+        password = console==null?scanner.nextLine().strip():new String(console.readPassword()); // Hide password on real console
 
         LoginRequest loginRequest = LoginRequest.newBuilder().setUsername(username).setPassword(password).build();
 
@@ -74,10 +75,10 @@ public class GrpcClient {
         try{
             loginResponse = stub.login(loginRequest);
         }catch (StatusRuntimeException e){
-            System.out.println("access failed");
+            System.err.println("Access failed");
             return false;
         }
-        System.out.printf("\nlogin with username %s executed ", username);
+        System.out.printf("login with username %s executed \n", username);
         loggedIn = true;
         loggedUsername = username;
         return true;
@@ -91,26 +92,20 @@ public class GrpcClient {
 
         printHeaders();
 
-        updateProposalsValidity();
-
-        List<Proposal> proposals = stub.retrieveAllProposals(AllProposalsRequest.newBuilder().build()).getProposalsList();
+        List<Proposal> proposals = stub.retrieveAllActiveProposals(AllActiveProposalsRequest.newBuilder().build()).getProposalsList();
 
         proposals.stream().forEach(p -> {List<Vote> l=new LinkedList<>();p.getVotesListList().forEach(e -> {if(e.getIsInFavor())l.add(e);});List<Vote> m=new LinkedList<>();p.getVotesListList().forEach(e -> {if(!e.getIsInFavor())m.add(e);});
             System.out.printf("%-24s %-32s %-32s %-32s %s\n",p.getTitle(),p.getDescription(),p.getCreatorUsername(),l.size(),m.size());});
-    }
-
-    private void updateProposalsValidity() {
-        stub.updateProposalsValidity(UpdateValidityRequest.newBuilder().build());
     }
 
     private void createNewProposal(){
 
         String title,description;
 
-        System.out.print("Insert title of new proposal: ");
+        System.out.println("Insert title of new proposal: ");
         title = scanner.nextLine().strip();
 
-        System.out.print("\nInsert a description: ");
+        System.out.println("\nInsert a description: ");
         description = scanner.nextLine().strip();
 
         CreateProposalRequest request = CreateProposalRequest.newBuilder().setTitle(title)
@@ -119,7 +114,7 @@ public class GrpcClient {
 
         Proposal p = stub.createProposal(request);
 
-        System.out.println("New proposal with title {} correctly added" + p.getTitle());
+        System.out.printf("New proposal with title %s correctly added \n", p.getTitle());
 
     }
 
@@ -152,7 +147,7 @@ public class GrpcClient {
                 this.loggedIn=false;
                 break;
             default:
-                System.out.println("Wrong input! ");
+                System.err.println("Wrong input! ");
                 printOptions();
         }
 
@@ -181,7 +176,7 @@ public class GrpcClient {
             case "3":
                 break;
             default:
-                System.out.println("Wrong input! ");
+                System.err.println("Wrong input! ");
                 voteProposal();
         }
 
