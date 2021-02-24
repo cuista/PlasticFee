@@ -10,4 +10,6 @@ public interface UserService {
     Optional<UserDto> findById(Long id);
     Optional<UserDto> findByUsername(String username);
     Optional<UserDto> verifyUserCredentials(String username,String password);
+    void updateUserReputation(String username, int reputationReward);
+
 }

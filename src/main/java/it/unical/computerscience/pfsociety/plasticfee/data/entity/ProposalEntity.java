@@ -2,6 +2,7 @@ package it.unical.computerscience.pfsociety.plasticfee.data.entity;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +29,12 @@ public class ProposalEntity {
 
     @Column(name = "IS_ACTIVE")
     private boolean active;
+
+    @Column(name = "EXPIRATION_DATE")
+    private LocalDate expirationDate;
+
+    @Column(name = "REPUTATION_REWARD")
+    private int reputationReward;
 
     @ManyToOne
     @JoinColumn(name = "CREATOR_ID", referencedColumnName = "ID")
@@ -69,6 +76,22 @@ public class ProposalEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public int getReputationReward() {
+        return reputationReward;
+    }
+
+    public void setReputationReward(int reputationReward) {
+        this.reputationReward = reputationReward;
     }
 
     public UserEntity getProposalCreator() {

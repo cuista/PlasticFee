@@ -4,6 +4,7 @@ import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +20,10 @@ public class ProposalDto implements Serializable {
     private LocalDateTime creationDateTime;
 
     private boolean active;
+
+    private LocalDate expirationDate;
+
+    private int reputationReward;
 
     private UserDto creator;
 
@@ -64,6 +69,22 @@ public class ProposalDto implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public int getReputationReward() {
+        return reputationReward;
+    }
+
+    public void setReputationReward(int reputationReward) {
+        this.reputationReward = reputationReward;
     }
 
     public UserDto getCreator() {

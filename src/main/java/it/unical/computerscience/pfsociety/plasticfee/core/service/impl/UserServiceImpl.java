@@ -1,5 +1,6 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service.impl;
 
+import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.UserByUsernameNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
@@ -54,5 +55,16 @@ public class UserServiceImpl implements UserService {
         if (userEntity.isPresent())
             return Optional.of(modelMapper.map(userEntity.get(),UserDto.class));
         throw new RuntimeException("user not exist");
+    }
+
+    @Override
+    public void updateUserReputation(String username, int reputationReward) {
+
+        UserEntity userEntity = userDao.findByUsername(username).orElseThrow(() -> new UserByUsernameNotFoundOnRetrieveException(username));
+
+        userEntity.setReputation(userEntity.getReputation()+reputationReward);
+
+        userDao.save(userEntity);
+
     }
 }

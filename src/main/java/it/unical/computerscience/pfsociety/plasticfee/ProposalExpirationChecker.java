@@ -1,6 +1,7 @@
 package it.unical.computerscience.pfsociety.plasticfee;
 
 import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.UserService;
 import it.unical.computerscience.pfsociety.plasticfee.core.service_grpc.ProposalGrpcServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public class ProposalExpirationChecker implements ApplicationListener<Applicatio
 
     @Autowired
     private ProposalService proposalService;
+
+    @Autowired
+    private UserService userService;
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(ProposalGrpcServiceImpl.class);

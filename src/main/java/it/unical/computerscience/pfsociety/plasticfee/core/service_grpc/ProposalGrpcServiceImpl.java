@@ -20,7 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,9 +99,15 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
     @Override
     public void createProposal(CreateProposalRequest request, StreamObserver<Proposal> responseObserver) {
         try {
-            ProposalDto proposalDto = proposalService.createProposal(request.getTitle(), request.getDescription(),
-                    request.getCreatorUsername(), LocalDateTime.now());
+
+            ProposalDto proposalDto = proposalService.createProposal(request.getTitle(),
+                    request.getDescription(),
+                    request.getCreatorUsername(), LocalDateTime.now(),
+                    fromProtoToLocalDate(request.getExpirationTimestamp()),
+                    request.getRewardReputation());
+
             responseObserver.onNext(toProtoProposal(proposalDto));
+
             responseObserver.onCompleted();
         }catch (Exception e){
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("create proposal error").withCause(e).asRuntimeException());
@@ -164,6 +173,11 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
                 .setId(voteDto.getId())
                 .setIsInFavor(voteDto.getInFavor())
                 .build();
+    }
+
+    private static LocalDate fromProtoToLocalDate(Timestamp timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos()), ZoneId.of("UTC"))
+                .toLocalDate();
     }
 
 }

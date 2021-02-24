@@ -1,5 +1,6 @@
 package it.unical.computerscience.pfsociety.plasticfee.controller.client;
 
+import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -7,9 +8,12 @@ import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.*;
 import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.ProposalServiceGrpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import java.io.Console;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -48,8 +52,9 @@ public class GrpcClient {
             client.login();
         }
 
+        client.printProposals();
+
         while(client.loggedIn){
-            client.printProposals();
             client.printOptions();
         }
 
@@ -98,18 +103,31 @@ public class GrpcClient {
             System.out.printf("%-24s %-32s %-32s %-32s %s\n",p.getTitle(),p.getDescription(),p.getCreatorUsername(),l.size(),m.size());});
     }
 
+
     private void createNewProposal(){
 
-        String title,description;
+        String title,description, expDate, reputationReward;
 
-        System.out.println("Insert title of new proposal: ");
+        System.out.print("Insert title of new proposal: ");
         title = scanner.nextLine().strip();
 
-        System.out.println("\nInsert a description: ");
+        System.out.print("\n\nInsert a description: ");
         description = scanner.nextLine().strip();
 
-        CreateProposalRequest request = CreateProposalRequest.newBuilder().setTitle(title)
-                .setDescription(description).setCreatorUsername(loggedUsername)
+        System.out.print("\n\nInsert expiration date (yyyy-MM-dd): ");
+        expDate = scanner.nextLine().strip();
+
+        LocalDate expirationDate = LocalDate.parse(expDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")); //TODO gestire eccezione
+
+        System.out.println("\n\nInsert the eventual reputation reward for the voters: ");
+        reputationReward = scanner.nextLine().strip();
+
+        CreateProposalRequest request = CreateProposalRequest.newBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setCreatorUsername(loggedUsername)
+                .setRewardReputation(Integer.parseInt(reputationReward))
+                .setExpirationTimestamp(fromLocalDateToProto(expirationDate))
                 .build();
 
         Proposal p = stub.createProposal(request);
@@ -148,7 +166,6 @@ public class GrpcClient {
                 break;
             default:
                 System.err.println("Wrong input! ");
-                printOptions();
         }
 
     }
@@ -188,4 +205,15 @@ public class GrpcClient {
         LogoutResponse response = stub.logout(LogoutRequest.newBuilder().setUsername(loggedUsername).build());
         System.out.println("logout executed for " + loggedUsername);
     }
+
+    private static Timestamp fromLocalDateToProto(LocalDate localDate) {
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        return Timestamp.newBuilder()
+                .setSeconds(instant.getEpochSecond())
+                .setNanos(instant.getNano())
+                .build();
+    }
+
+
+
 }
