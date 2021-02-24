@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MessageDao extends JpaRepository<MessageEntity,String>, JpaSpecificationExecutor<MessageEntity> {
+public interface MessageDao extends JpaRepository<MessageEntity,Long>, JpaSpecificationExecutor<MessageEntity> {
 
 }

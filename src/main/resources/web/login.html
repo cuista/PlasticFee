@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.79.0">
+    <title>Signin</title>
+	
+	<!-- Behavioral Meta Data -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="woo/styles.css"/>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+	
+	<!-- JQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+	<link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="css/signin.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+  </head>
+  <body class="text-center">
+  
+  <!-- START ANIMATE BACKGROUND -->
+  <div id="fb-root" class=" fb_reset">
+	<div style="position: absolute; top: -10000px; width: 0px; height: 0px;">
+	</div>
+  </div>
+  <div id="container" class="wrapper">
+		<ul>
+			<li class="layer" data-depth="0.00" style="position: relative; display: block; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="background"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light orange b phase-4"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light purple c phase-5"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light orange d phase-3"></div></li>
+			<li class="layer" data-depth="0.15" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-12.7631px, -3.015px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+				<ul class="rope depth-10">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-2">
+						<div class="board cloud-2 swing-1"></div>
+					</li>
+					<li class="hanger position-4">
+						<div class="board cloud-1 swing-3"></div>
+					</li>
+					<li class="hanger position-8">
+						<div class="board birds swing-5"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.20" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-17.0174px, -4.02px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+			<li class="layer" data-depth="0.30" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-25.5262px, -6.03px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+				<ul class="rope depth-30">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-1">
+						<div class="board cloud-1 swing-3"></div>
+					</li>
+					<li class="hanger position-5">
+						<div class="board cloud-4 swing-1"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.30" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-25.5262px, -6.03px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-30"></div></li>
+			<li class="layer" data-depth="0.40" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-34.0349px, -8.04px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-40"></div></li>
+			<li class="layer" data-depth="0.50" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-42.5436px, -10.05px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-50"></div></li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="lighthouse depth-60"></div></li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">	
+				<ul class="rope depth-60">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-3">
+						<div class="board birds swing-5"></div>
+					</li>
+					<li class="hanger position-6">
+						<div class="board cloud-2 swing-2"></div>
+					</li>
+					<li class="hanger position-8">
+						<div class="board cloud-3 swing-4"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-60"></div></li>
+			<li class="layer" data-depth="0.80" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-68.0698px, -16.08px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-80"></div></li>
+			<li class="layer" data-depth="1.00" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-85.0872px, -20.1px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-100"></div></li>
+		</ul>
+	</div>
+	</div>
+	<!-- END ANIMATE BACKGROUND -->
+		
+		
+<main class="form-signin my-card card-max-width on-top-z-index">
+  <form class="needs-validation" novalidate>
+    <img class="btn btn-lg mb-4" id="logo" src="assets/brand/bootstrap-logo.svg" alt="" height="257">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+	
+<nav class="nav-with-pad">
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="a-green nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">User</a>
+    <a class="a-green nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Staff</a> 
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+    <label for="inputID-User" class="visually-hidden">User</label>
+    <input type="number" id="inputID-User" class="form-control" minlength="3" maxlength="15" pattern="[A-Za-z.0-9]+" placeholder="User" required autofocus>
+	<nav class="nav-with-pad"></nav>
+    <label for="inputPassword-User" class="visually-hidden">Password</label>
+    <input type="password" id="inputPassword-User" class="form-control" minlength="3" maxlength="15" pattern="[A-Za-z.0-9]+" placeholder="Password" required>
+	<hr>
+    <button class="w-100 btn btn-lg btn-primary" onclick="loginUser()" type="submit">Sign in</button>
+  </div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+     <label for="inputID-Staff" class="visually-hidden">Staff</label>
+    <input type="text" id="inputID-Staff" class="form-control" minlength="3" maxlength="15" pattern="[A-Za-z.0-9]+" placeholder="Staff" required autofocus>
+	<nav class="nav-with-pad"></nav>
+    <label for="inputPassword-Staff" class="visually-hidden">Password</label>
+    <input type="password" id="inputPassword-Staff" class="form-control" minlength="3" maxlength="15" pattern="[A-Za-z0-9]+" placeholder="Password" required>
+	<hr>
+    <button class="w-100 btn btn-lg btn-primary" onclick="loginStaff()" type="submit">Sign in</button>
+  </div>
+</div>
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2020 - 2525</p>
+  </form>
+</main>
+
+	<script src="javascript/login.js"></script>
+	
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+</html>

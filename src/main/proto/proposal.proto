@@ -1,0 +1,157 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal;
+
+import "google/protobuf/timestamp.proto";
+
+service ProposalService {
+
+  // Create new user
+  rpc createUser(CreateUserRequest) returns(User);
+
+  // Do a retrieve of the user
+  rpc getUser(GetUserRequest) returns(User);
+
+  /* Client Side */
+  // Check user credentials
+  rpc login(LoginRequest) returns (LoginResponse);
+
+  //Allows user to logout from the chat
+  rpc logout(LogoutRequest) returns (LogoutResponse);
+
+  //Allows user to create a new proposal
+  rpc createProposal(CreateProposalRequest) returns (Proposal);
+
+  //Allows to retrieve all active proposals
+  rpc retrieveAllActiveProposals(AllActiveProposalsRequest) returns (AllActiveProposalsResponse);
+
+  //Allows user to vote an active proposal
+  rpc voteActiveProposal(VoteActiveProposalRequest) returns (VoteActiveProposalResponse);
+
+  //Allows to retrieve all proposals (expired and active)
+  rpc retrieveAllProposals(RetrieveAllProposalsRequest) returns (RetrieveAllProposalsResponse);
+
+  //Allows to retrieve all expired proposals (expired and active)
+  rpc retrieveAllExpiredProposals(RetrieveAllExpiredProposalsRequest) returns (RetrieveAllExpiredProposalsResponse);
+
+  //Allows to retrieve personal proposals
+  rpc retrievePersonalProposals(RetrievePersonalProposalsRequest) returns (RetrievePersonalProposalsResponse);
+
+  //Allows to update proposalExpirationDate
+  rpc updateProposalExpirationDate(ExpirationUpdateRequest) returns (ExpirationUpdateResponse);
+}
+
+message ExpirationUpdateRequest{
+
+  string proposalTitle = 1;
+  string username = 2;
+  google.protobuf.Timestamp newExpiration =3;
+
+}
+
+message ExpirationUpdateResponse{
+
+  string response = 1;
+
+}
+
+message RetrievePersonalProposalsRequest{
+  string username = 1;
+}
+
+message RetrievePersonalProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message RetrieveAllExpiredProposalsRequest{
+
+}
+
+message RetrieveAllExpiredProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message RetrieveAllProposalsRequest{
+
+}
+
+message RetrieveAllProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message AllActiveProposalsRequest{
+
+}
+
+message AllActiveProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message VoteActiveProposalRequest{
+  string title = 1;
+  string username = 2;
+  bool isInFavor = 3;
+}
+
+message VoteActiveProposalResponse{
+
+}
+
+message AllProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message CreateProposalRequest {
+  string title = 1;
+  string description = 2;
+  string creatorUsername = 3;
+  int32 rewardReputation = 4;
+  google.protobuf.Timestamp expirationTimestamp = 5;
+}
+
+message Vote {
+  int64 id = 1;
+  bool isInFavor = 2;
+}
+
+message Proposal {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  string creatorUsername = 4;
+  google.protobuf.Timestamp creationTimestamp = 5;
+  repeated Vote votesList = 6;
+}
+
+// TODO codici delle response HTTP
+message User {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message CreateUserRequest{
+  string username=1;
+  string password=2;
+}
+
+message GetUserRequest{
+  int64 id=1;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  string token = 1;
+}
+
+message LogoutRequest {
+  string username = 1;
+}
+
+message LogoutResponse {
+
+}
