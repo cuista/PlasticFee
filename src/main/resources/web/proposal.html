@@ -1,0 +1,329 @@
+	<!doctype html>
+	<html lang="en"><head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Hugo 0.79.0">
+		<title>Proposal</title>
+		
+		<!-- Behavioral Meta Data -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<!-- Styles -->
+		<link rel="stylesheet" type="text/css" href="woo/styles.css"/>
+
+		<link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
+
+		<!-- JQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+		<!-- Bootstrap core CSS -->
+		<link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+		<style>
+		  .bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		  }
+
+		  @media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+			  font-size: 3.5rem;
+			}
+		  }
+		</style>
+
+		
+		<!-- Custom styles for this template -->
+		<link href="css/navbar-top-fixed.css" rel="stylesheet">
+		<link href="css/form-proposal.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+
+	  </head>
+	  <body class="bg-light">
+	  
+	    <!-- START ANIMATE BACKGROUND -->
+		<!--
+  <div id="fb-root" class=" fb_reset">
+	<div style="position: absolute; top: -10000px; width: 0px; height: 0px;">
+	</div>
+  </div>
+  <div id="container" class="wrapper">
+		<ul>
+			<li class="layer" data-depth="0.00" style="position: relative; display: block; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="background"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light orange b phase-4"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light purple c phase-5"></div></li>
+			<li class="layer" data-depth="0.10" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-8.50872px, -2.01px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="light orange d phase-3"></div></li>
+			<li class="layer" data-depth="0.15" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-12.7631px, -3.015px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+				<ul class="rope depth-10">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-2">
+						<div class="board cloud-2 swing-1"></div>
+					</li>
+					<li class="hanger position-4">
+						<div class="board cloud-1 swing-3"></div>
+					</li>
+					<li class="hanger position-8">
+						<div class="board birds swing-5"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.20" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-17.0174px, -4.02px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+			<li class="layer" data-depth="0.30" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-25.5262px, -6.03px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">
+				<ul class="rope depth-30">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-1">
+						<div class="board cloud-1 swing-3"></div>
+					</li>
+					<li class="hanger position-5">
+						<div class="board cloud-4 swing-1"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.30" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-25.5262px, -6.03px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-30"></div></li>
+			<li class="layer" data-depth="0.40" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-34.0349px, -8.04px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-40"></div></li>
+			<li class="layer" data-depth="0.50" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-42.5436px, -10.05px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-50"></div></li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="lighthouse depth-60"></div></li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;">	
+				<ul class="rope depth-60">
+					<li><img src="woo/images/rope.png" alt="Rope"></li>
+					<li class="hanger position-3">
+						<div class="board birds swing-5"></div>
+					</li>
+					<li class="hanger position-6">
+						<div class="board cloud-2 swing-2"></div>
+					</li>
+					<li class="hanger position-8">
+						<div class="board cloud-3 swing-4"></div>
+					</li>
+				</ul>
+			</li>
+			<li class="layer" data-depth="0.60" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-51.0523px, -12.06px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-60"></div></li>
+			<li class="layer" data-depth="0.80" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-68.0698px, -16.08px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave plain depth-80"></div></li>
+			<li class="layer" data-depth="1.00" style="position: absolute; display: block; left: 0px; top: 0px; transform: translate3d(-85.0872px, -20.1px, 0px); transform-style: preserve-3d; backface-visibility: hidden;"><div class="wave paint depth-100"></div></li>
+		</ul>
+	</div>
+	</div>
+	<!-- END ANIMATE BACKGROUND -->
+	-->
+	  
+	  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	  <div class="container-fluid">
+	    <img class="d-block mx-auto" id="logo-nav" src="assets/brand/bootstrap-logo-no-text.svg" alt="" width="92" height="57">
+		<a class="navbar-brand">PlasticFee <strong class="a-green">Community</strong></a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+		  <ul class="navbar-nav me-auto mb-2 mb-md-0">
+		  </ul>
+		  <span class="navbar-dark navbar-text">
+			<ul class="navbar-nav me-auto mb-2 mb-md-0">
+			<li class="nav-item active">
+			  <a class="nav-link" aria-current="page" href="#" onclick="logout()">Logout</a>
+			</li>
+		  </ul>
+		  </span>
+		</div>
+	  </div>
+	</nav>
+		
+	<div class="container my-card no-border-radius on-top-z-index">
+	  <main>
+		
+		<div class="py-5 text-center">
+		  <img class="d-block mx-auto mb-4" id="logo" src="assets/brand/bootstrap-logo.svg" alt="" width="372" height="257">
+		  <h2>Create a proposal or vote one</h2>
+		  <p class="lead pad-lovers"><strong>Make or vote a proposal: </strong>A proposal is equivalent to a project pitch and includes details about the proposal such as objectives, methods, costs and milestones.
+		  You can vote on whether a proposal should be accepted or rejected.
+		  <br><strong>Users can increase their reputation by: </strong>Creating proposals that get accepted by the DAO or voting in favor of proposals that get accepted by the DAO.
+		  <br><strong>Users’ reputation might decrease by: </strong>Creating a proposal that does not get accepted by the DAO or voting for a proposal that does not get accepted by the DAO.
+		  </p>
+		</div>
+		
+		<hr class="my-4">
+
+		<div class="row g-3">
+		  <div class="col-md-5 col-lg-4 order-md-last">
+			<h4 class="d-flex justify-content-between align-items-center mb-3">
+			  <span class="text-muted">All active proposal</span>
+			  <span class="badge bg-secondary rounded-pill">Info</span>
+			</h4>
+			<ul class="list-group mb-3">
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 1</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo..</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 2</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo..</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 3</h6>
+				  <small class="text-muted"> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 4</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo..</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 5</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo..</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 6</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 7</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</small>
+				</div>
+			  </li>
+			  <li class="list-group-item d-flex justify-content-between lh-sm">
+				<div>
+				  <h6 class="my-0">Proposal 8</h6>
+				  <small class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</small>
+				</div>
+			  </li>
+
+			</ul>
+
+		  </div>
+		  <div class="col-md-7 col-lg-8">
+		  
+			<div class="row">
+				<h2>Create your proposal</h2>
+				<div class="less-pad-for-everyone"></div>
+				<h4 id="current-title" class="mb-3">Title: </h4>
+				<div class="col-md"><input placeholder="Title" required="" autofocus=""></div>
+				<div class="my-4"></div>
+				<!-- title show up here
+				<p> TITLE </p>
+				-->
+				<h4 id="current-description" class="mb-3">Description: </h4>
+				<div><input placeholder="Description" required="" autofocus=""></div>
+				<div class="my-4"></div>
+				<!--description show up here
+				<p> DESCRIPTION </p>
+				-->
+				<h4 id="current-exp-date" class="mb-3">Expiration Date: </h4>
+				<div><input placeholder="Expiration Date" required="" autofocus=""></div>
+				<div class="my-4"></div>
+				<!--exp-date show up here
+				<p> EXPIRATION DATE </p>
+				-->
+				<div id="res_id"></div>
+			</div>
+			
+			<div class="my-4"></div>
+			<button class="w-100 btn btn-secondary btn-lg" onclick="createProposal()">Create new proposal</button>
+			
+			<div class="my-4"></div>
+			<hr class="my-4">
+			<div class="row">
+				<h2>Edit expiration date of your active proposal</h2>
+				<div class="less-pad-for-everyone"></div>
+				<h4 id="current-title" class="mb-3">Title: </h4>
+				<div><input placeholder="Title" required="" autofocus=""></div>
+				<div class="my-4"></div>
+				<h4 id="current-exp-date" class="mb-3">Expiration Date: </h4>
+				<div><input placeholder="Expiration Date" required="" autofocus=""></div>
+				<div class="my-4"></div>
+				<div id="res_id"></div>
+			</div>
+			
+			<div class="my-4"></div>
+			<button class="w-100 btn btn-secondary btn-lg" onclick="editExpDateProposal()">Edit expiration date</button>
+		
+			<div class="my-4"></div>
+			<hr class="my-4">
+			<h2>Vote one of the active proposals</h2>
+			<div class="less-pad-for-everyone"></div>
+			<h4 class="mb-3">Choose one</h4>
+			<form class="needs-validation" novalidate="">
+			  <div class="row g-3">
+			  
+				<div class="col-md">
+				  <label for="neighborhood" class="form-label">Choose one by the title name</label>
+				  <select class="form-select" id="neighborhood" required="">
+					<option value="1">Proposal 1</option>
+					<option value="2">Proposal 2</option>
+					<option value="3">Proposal 3</option>
+					<option value="4">Proposal 4</option>
+					<option value="5">Proposal 5</option>
+					<option value="6">Proposal 6</option>
+					<option value="6">Proposal 7</option>
+					<option value="6">Proposal 8</option>
+				  </select>
+				  <div class="invalid-feedback">
+					Please select an active proposal.
+				  </div>
+				</div>
+			  </div>
+
+			  <div class="pad-for-everyone"></div>
+
+			  <h4 class="mb-3">Are you in favor or against?</h4>
+			  <div class="my-3" id="radio-isInFavor">
+				<div class="form-check">
+				  <input id="vote1" name="isInFavor" type="radio" class="form-check-input" checked="true" required="" value="y">
+				  <label class="form-check-label" for="vote1">In favor</label>
+				</div>
+				<div class="form-check">
+				  <input id="vote2" name="isInFavor" type="radio" class="form-check-input" checked="" required="" value="n">
+				  <label class="form-check-label" for="vote2">Against</label>	  
+			    </div>
+			  </div>
+
+			  <div class="my-4"></div>
+			  <button class="w-100 btn btn-secondary btn-lg" onclick="voteProposal()">Vote</button>
+			  <hr class="my-4">
+			</form>
+		  </div>
+		</div>
+	  </main>
+	  <div class="container-delimiter"></div>
+	</div>
+
+	<!--
+	  <footer class="footer-fix pt-5 text-center text-small">
+		<p class="mb-1">© 2020-2525 PlasticFee's lovers Community</p>
+		<ul class="footer-fix list-inline">
+		  <li class="list-inline-item"><a class="a-green" href="#">Thanks</a></li>
+		  <li class="list-inline-item"><a class="a-green" href="#">For</a></li>
+		  <li class="list-inline-item"><a class="a-green" href="#">Visit</a></li>
+		  <li class="list-inline-item"><a class="a-green" href="#">PlasticFee</a></li>
+		  <li class="list-inline-item"><a class="a-green" href="#">Today</a></li>
+		</ul>
+	  </footer>
+	-->
+
+
+		<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+		
+		<script src="javascript/logout.js"></script>
+
+		<script src="javascript/proposal.js"></script>
+	  
+
+	</body>
+	</html>

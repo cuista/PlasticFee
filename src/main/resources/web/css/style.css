@@ -1,0 +1,108 @@
+body {
+	font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important;
+	padding-top: 3rem;
+    /* background-image: linear-gradient(#080f15, #0f283e 40%, #29144c); */
+	background-color: #00000;
+}
+
+.my-card {
+	background: #F2F2F2 url(../woo/images/panel.jpg) -7px 0;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.on-top-z-index {
+	z-index: 1;
+}
+	
+.card-max-width {
+	max-width: 400px;
+}
+
+.no-border-radius {
+	border-radius: 0rem;
+}
+
+#logo {
+	background-color: #00a20021;
+}
+
+#logo-nav {
+    filter: invert(127%) sepia(81%) saturate(2878%) hue-rotate(336deg) brightness(94%) contrast(97%);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #00a90d;
+    border-color: #006108;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+	color: #fff;
+    background-color: #00880b;
+    border-color: #004005;
+	box-shadow: 0 0 0 0.25rem rgb(34 139 34 / 50%);
+}
+
+.btn-check:active+.btn-primary:focus, .btn-check:checked+.btn-primary:focus, .btn-primary.active:focus, .btn-primary:active:focus, .show>.btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgb(34 139 34 / 50%);
+}
+
+.nav-with-pad {
+	padding-bottom: 1rem;
+}
+
+.container-delimiter {
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+}
+
+.footer-fix {
+	background-color: black;
+	margin-top: 0rem;
+    margin-bottom: 0rem;
+	padding-bottom: 3rem;
+	color: #ffffff;
+}
+
+.a-green {
+	color: #00a90d
+}
+
+.a-green:hover {
+	color: #015808
+}
+
+.a-red {
+	color: #ff6363
+}
+
+.a-red:hover {
+	color: #ff2323
+}
+
+#welcome {
+	max-width: 72em;
+}
+
+.container-welcome {
+	padding-right: 5rem;
+	padding-left: 5rem;
+}
+
+.pad-lovers {
+	padding: 2rem;
+}
+
+.pad-for-everyone {
+	padding-bottom: 3rem;
+}
+
+.less-pad-for-everyone {
+	padding-bottom: 1rem;
+}
+
+.a-text-decoration-none {
+	text-decoration: none;
+}

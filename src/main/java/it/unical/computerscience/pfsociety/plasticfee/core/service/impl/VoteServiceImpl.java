@@ -10,11 +10,16 @@ import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.VoteDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
+import it.unical.computerscience.pfsociety.plasticfee.data.dto.VoteDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VoteServiceImpl implements VoteService {
@@ -27,6 +32,9 @@ public class VoteServiceImpl implements VoteService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public boolean addVote(Boolean isInFavor, String proposalTitle, String username) {
@@ -48,5 +56,14 @@ public class VoteServiceImpl implements VoteService {
         }
 
         return false;
+    }
+
+    @Override
+    public List<VoteDto> retrieveAllVotes() {
+        return toVoteDtoListMapper(voteDao.findAll());
+    }
+
+    private List<VoteDto> toVoteDtoListMapper(List<VoteEntity> entities){
+        return entities.stream().map(proposal -> modelMapper.map(proposal,VoteDto.class)).collect(Collectors.toList());
     }
 }
