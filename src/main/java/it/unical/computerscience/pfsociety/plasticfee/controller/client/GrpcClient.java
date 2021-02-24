@@ -4,11 +4,11 @@ import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.ProposalByTitleNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.*;
 import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.ProposalServiceGrpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import java.io.Console;
@@ -28,7 +28,7 @@ public class GrpcClient {
     private String loggedUsername;
     private ProposalServiceGrpc.ProposalServiceBlockingStub stub;
     private ManagedChannel channel;
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClient.class);
 
     public GrpcClient(){
@@ -48,14 +48,28 @@ public class GrpcClient {
 
         GrpcClient client = new GrpcClient(HOST,PORT);
 
-        while(!client.loggedIn){
-            client.login();
-        }
+        boolean is_exited = false;
 
-        client.printProposals();
+        while(!is_exited) {
 
-        while(client.loggedIn){
-            client.printOptions();
+            System.out.println("1) Register");
+            System.out.println("2) Login");
+            System.out.println("3) Exit");
+            System.out.print("Type the corresponding number to choose the option: ");
+            String input = scanner.nextLine();
+
+            if (input.equals("1")){
+                client.register();
+
+            }else if (input.equals("2")){
+                client.login();
+
+                while (client.loggedIn){
+                    client.printOptions();
+                }
+            }else if (input.equals("3")){
+                is_exited=true;
+            }
         }
 
         client.channel.shutdown();
@@ -89,18 +103,37 @@ public class GrpcClient {
         return true;
     }
 
+    public void register(){
+
+        String username, password;
+
+        System.out.print("Insert username: ");
+        username = scanner.nextLine().strip();
+
+        System.out.print("\nInsert password: ");
+        password = scanner.nextLine().strip();
+
+        try {
+            User user = stub.createUser(CreateUserRequest.newBuilder().setUsername(username).setPassword(password).build());
+        }catch (StatusRuntimeException e){
+            System.err.println("Username already in use");
+            return;
+        }
+
+        System.out.println("\nRegistration correctly executed, you can now login with your credentials");
+    }
+
     private void printHeaders(){
         System.out.printf("\n%-24s %-32s %-32s %-32s %s\n","PROPOSAL TITLE","PROPOSAL DESCRIPTION","CREATOR","VOTES IN FAVOR","VOTES AGAINST");
     }
 
-    public void printProposals(){
+    public void printActiveProposals(){
 
         printHeaders();
 
         List<Proposal> proposals = stub.retrieveAllActiveProposals(AllActiveProposalsRequest.newBuilder().build()).getProposalsList();
 
-        proposals.stream().forEach(p -> {List<Vote> l=new LinkedList<>();p.getVotesListList().forEach(e -> {if(e.getIsInFavor())l.add(e);});List<Vote> m=new LinkedList<>();p.getVotesListList().forEach(e -> {if(!e.getIsInFavor())m.add(e);});
-            System.out.printf("%-24s %-32s %-32s %-32s %s\n",p.getTitle(),p.getDescription(),p.getCreatorUsername(),l.size(),m.size());});
+        prettyPrint(proposals);
     }
 
 
@@ -117,7 +150,14 @@ public class GrpcClient {
         System.out.print("\n\nInsert expiration date (yyyy-MM-dd): ");
         expDate = scanner.nextLine().strip();
 
-        LocalDate expirationDate = LocalDate.parse(expDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")); //TODO gestire eccezione
+        LocalDate expirationDate=null;
+
+        try {
+            expirationDate = LocalDate.parse(expDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }catch (DateTimeException e){
+            System.err.println("The specified date format was not correct");
+            return;
+        }
 
         System.out.println("\n\nInsert the eventual reputation reward for the voters: ");
         reputationReward = scanner.nextLine().strip();
@@ -139,10 +179,13 @@ public class GrpcClient {
     public void printOptions(){
 
 
-        System.out.println("\n1) Insert a new proposal ");
-        System.out.println("2) Show all proposals ");
-        System.out.println("3) Vote for an active proposal ");
-        System.out.println("4) Logout ");
+        System.out.println("\n1) Create a new proposal ");
+        System.out.println("2) Show active and expired proposals: ");
+        System.out.println("3) Show all active proposals ");
+        System.out.println("4) Show all expired proposals ");
+        System.out.println("5) Show your proposals ");
+        System.out.println("6) Vote for an active proposal ");
+        System.out.println("7) Logout ");
 
         System.out.print("Type the corresponding number to pick one: ");
 
@@ -154,12 +197,21 @@ public class GrpcClient {
                 createNewProposal();
                 break;
             case "2":
-                printProposals();
+                printActiveAndExpiredProposals();
                 break;
             case "3":
-                voteProposal();
+                printActiveProposals();
                 break;
             case "4":
+                printExpiredProposals();
+                break;
+            case "5":
+                printPersonalProposals();
+                break;
+            case "6":
+                voteProposal();
+                break;
+            case "7":
                 this.logout();
                 this.loggedUsername=null;
                 this.loggedIn=false;
@@ -168,6 +220,75 @@ public class GrpcClient {
                 System.err.println("Wrong input! ");
         }
 
+    }
+
+    private void printPersonalProposals() {
+
+        printHeaders();
+
+        List<Proposal> proposals = stub.retrievePersonalProposals(RetrievePersonalProposalsRequest.newBuilder()
+                .setUsername(loggedUsername).build()).getProposalsList();
+
+        prettyPrint(proposals);
+
+        System.out.println("\nDo you wish to update the expiration date for one of your proposals? y/n");
+        String input = scanner.nextLine().strip();
+
+        while ((!input.equals("y")) && (!input.equals("n"))){
+            System.out.println("Wrong input: please retype a correct one ");
+            input= scanner.nextLine();
+        }
+
+        if (input.equals("y")){
+
+            String title, expiration;
+
+            System.out.print("Insert proposal title: ");
+            title = scanner.nextLine();
+
+            System.out.print("\nInsert the new expiration date: ");
+            expiration = scanner.nextLine();
+
+            LocalDate expirationDate=null;
+
+            try {
+                expirationDate = LocalDate.parse(expiration, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }catch (DateTimeException e){
+                System.err.println("The specified date format was not correct");
+                return;
+            }
+
+            try{
+
+                ExpirationUpdateResponse response = stub.updateProposalExpirationDate(ExpirationUpdateRequest.newBuilder()
+                        .setNewExpiration(fromLocalDateToProto(expirationDate)).setUsername(loggedUsername)
+                        .setProposalTitle(title).build());
+
+                System.out.println(response.getResponse());
+
+            } catch(RuntimeException e){
+                System.err.println("No active proposal found with this title\n");
+            }
+
+        }
+    }
+
+    private void printExpiredProposals() {
+
+        printHeaders();
+
+        List<Proposal> proposals = stub.retrieveAllExpiredProposals(RetrieveAllExpiredProposalsRequest.newBuilder().build()).getProposalsList();
+
+        prettyPrint(proposals);
+    }
+
+    private void printActiveAndExpiredProposals() {
+
+        printHeaders();
+
+        List<Proposal> proposals = stub.retrieveAllProposals(RetrieveAllProposalsRequest.newBuilder().build()).getProposalsList();
+
+        prettyPrint(proposals);
     }
 
     public void voteProposal() {
@@ -196,14 +317,11 @@ public class GrpcClient {
                 System.err.println("Wrong input! ");
                 voteProposal();
         }
-
-
-
     }
 
     public void logout(){
         LogoutResponse response = stub.logout(LogoutRequest.newBuilder().setUsername(loggedUsername).build());
-        System.out.println("logout executed for " + loggedUsername);
+        System.out.println("\nlogout executed for " + loggedUsername +"\n");
     }
 
     private static Timestamp fromLocalDateToProto(LocalDate localDate) {
@@ -212,6 +330,11 @@ public class GrpcClient {
                 .setSeconds(instant.getEpochSecond())
                 .setNanos(instant.getNano())
                 .build();
+    }
+
+    private void prettyPrint(List<Proposal> proposals) {
+        proposals.stream().forEach(p -> {List<Vote> l=new LinkedList<>();p.getVotesListList().forEach(e -> {if(e.getIsInFavor())l.add(e);});List<Vote> m=new LinkedList<>();p.getVotesListList().forEach(e -> {if(!e.getIsInFavor())m.add(e);});
+            System.out.printf("%-24s %-32s %-32s %-32s %s\n",p.getTitle(),p.getDescription(),p.getCreatorUsername(),l.size(),m.size());});
     }
 
 

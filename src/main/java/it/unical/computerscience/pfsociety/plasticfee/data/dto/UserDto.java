@@ -8,6 +8,8 @@ public class UserDto implements Serializable {
 
     private String username;
 
+    private String password;
+
     private int reputation;
 
     public UserDto(){}
@@ -34,5 +36,13 @@ public class UserDto implements Serializable {
 
     public void setReputation(int reputation) {
         this.reputation = reputation;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

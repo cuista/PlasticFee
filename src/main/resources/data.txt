@@ -1,0 +1,7 @@
+INSERT INTO pfe_user VALUES (1,"password1",0,"utente1"),
+(2,"tuborg",0,"greta");
+
+INSERT INTO pfe_proposal VALUES (11,true,CURRENT_TIMESTAMP(6),"descr1","2021-02-25",12,"title1",2),
+(12,true,CURRENT_TIMESTAMP(6),"descr2","2021-06-25",43,"title2",1);
+
+INSERT INTO pfe_vote VALUES (21,false,11,2),(22,true,12,1);

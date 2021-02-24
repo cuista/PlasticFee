@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 import java.util.Set;
@@ -25,10 +26,17 @@ public interface ProposalDao extends JpaRepository<ProposalEntity,Long>, JpaSpec
     Optional<ProposalEntity> findByActiveIsTrueAndTitleEquals(String title);
     Optional<ProposalEntity> findByDescriptionEquals(String description);
     List<ProposalEntity> findByActiveIsTrue();
+    List<ProposalEntity> findAllByActiveIsFalse();
+    List<ProposalEntity> findAllByProposalCreator_Username(String username);
 
     @Transactional
     @Modifying
     @Query("update ProposalEntity p set p.active = false where p.id=:id")
     void setProposalAsExpired(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update ProposalEntity p set p.expirationDate=:expirationDate where p.title=:title")
+    void updateExpirationDate(@Param("expirationDate") LocalDate expirationDate,@Param("title") String title);
 
 }

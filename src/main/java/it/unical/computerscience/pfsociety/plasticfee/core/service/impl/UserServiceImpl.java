@@ -21,14 +21,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Transactional
     @Override
     public UserDto createNewUser(String username,String password) {
-        if(!findByUsername(username).isEmpty())
+        if(userExists(username))
             throw new RuntimeException();
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setPassword(password);
+        userEntity.setReputation(0);
         userDao.save(userEntity);
         return (modelMapper.map(userEntity, UserDto.class));
     }
@@ -66,5 +66,15 @@ public class UserServiceImpl implements UserService {
 
         userDao.save(userEntity);
 
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        Optional<UserEntity> userEntity = userDao.findByUsername(username);
+
+        if (userEntity.isPresent()){
+            return true;
+        }
+        return false;
     }
 }

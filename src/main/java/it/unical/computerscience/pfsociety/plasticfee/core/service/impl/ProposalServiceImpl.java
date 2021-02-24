@@ -1,26 +1,18 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service.impl;
 
+import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
 import it.unical.computerscience.pfsociety.plasticfee.core.service.UserService;
 import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.ProposalByTitleNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.ProposalDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
-import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.VoteDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
-import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
-import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
-import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +44,35 @@ public class ProposalServiceImpl implements ProposalService {
     @Override
     public ProposalDto retrieveActiveProposalByTitle(String title) {
         return modelMapper.map(proposalDao.findByActiveIsTrueAndTitleEquals(title).orElseThrow(() -> new ProposalByTitleNotFoundOnRetrieveException(title)),ProposalDto.class);
+    }
+
+    @Override
+    public List<ProposalDto> retrieveAllProposals() {
+        List<ProposalEntity> proposalEntities = proposalDao.findAll();
+
+        return toProposalDtoListMapper(proposalEntities);
+    }
+
+    @Override
+    public List<ProposalDto> retrieveAllExpiredProposals() {
+        List<ProposalEntity> proposalEntities = proposalDao.findAllByActiveIsFalse();
+
+        return toProposalDtoListMapper(proposalEntities);
+    }
+
+    @Override
+    public List<ProposalDto> retrievePersonalProposals(String username) {
+
+        List<ProposalEntity> proposalEntities = proposalDao.findAllByProposalCreator_Username(username);
+
+        return toProposalDtoListMapper(proposalEntities);
+    }
+
+    @Override
+    public void updateProposalExpirationDate(LocalDate localDate,String title) {
+
+        proposalDao.updateExpirationDate(localDate,title);
+
     }
 
     @Override
@@ -108,4 +129,7 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
 
+    private List<ProposalDto> toProposalDtoListMapper(List<ProposalEntity> entities){
+      return entities.stream().map(proposal -> modelMapper.map(proposal,ProposalDto.class)).collect(Collectors.toList());
+    }
 }

@@ -14,4 +14,8 @@ public interface ProposalService {
                                LocalDate expirationDate, int reputationReward);
     void verifyProposalsExpirationAndUpdateIfNeeded();
     ProposalDto retrieveActiveProposalByTitle(String title);
+    List<ProposalDto> retrieveAllProposals();
+    List<ProposalDto> retrieveAllExpiredProposals();
+    List<ProposalDto> retrievePersonalProposals(String username);
+    void updateProposalExpirationDate(LocalDate localDate,String title);
 }

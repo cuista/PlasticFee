@@ -22,11 +22,61 @@ service ProposalService {
   //Allows user to create a new proposal
   rpc createProposal(CreateProposalRequest) returns (Proposal);
 
-  //Allows to retrieve all proposals
+  //Allows to retrieve all active proposals
   rpc retrieveAllActiveProposals(AllActiveProposalsRequest) returns (AllActiveProposalsResponse);
 
   //Allows user to vote an active proposal
   rpc voteActiveProposal(VoteActiveProposalRequest) returns (VoteActiveProposalResponse);
+
+  //Allows to retrieve all proposals (expired and active)
+  rpc retrieveAllProposals(RetrieveAllProposalsRequest) returns (RetrieveAllProposalsResponse);
+
+  //Allows to retrieve all expired proposals (expired and active)
+  rpc retrieveAllExpiredProposals(RetrieveAllExpiredProposalsRequest) returns (RetrieveAllExpiredProposalsResponse);
+
+  //Allows to retrieve personal proposals
+  rpc retrievePersonalProposals(RetrievePersonalProposalsRequest) returns (RetrievePersonalProposalsResponse);
+
+  //Allows to update proposalExpirationDate
+  rpc updateProposalExpirationDate(ExpirationUpdateRequest) returns (ExpirationUpdateResponse);
+}
+
+message ExpirationUpdateRequest{
+
+  string proposalTitle = 1;
+  string username = 2;
+  google.protobuf.Timestamp newExpiration =3;
+
+}
+
+message ExpirationUpdateResponse{
+
+  string response = 1;
+
+}
+
+message RetrievePersonalProposalsRequest{
+  string username = 1;
+}
+
+message RetrievePersonalProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message RetrieveAllExpiredProposalsRequest{
+
+}
+
+message RetrieveAllExpiredProposalsResponse{
+  repeated Proposal proposals = 1;
+}
+
+message RetrieveAllProposalsRequest{
+
+}
+
+message RetrieveAllProposalsResponse{
+  repeated Proposal proposals = 1;
 }
 
 message AllActiveProposalsRequest{
@@ -77,6 +127,7 @@ message Proposal {
 message User {
   int64 id = 1;
   string username = 2;
+  string password = 3;
 }
 
 message CreateUserRequest{

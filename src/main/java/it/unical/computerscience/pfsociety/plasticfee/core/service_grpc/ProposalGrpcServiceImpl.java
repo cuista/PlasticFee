@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.ProposalByTitleNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.ProposalDto;
 import it.unical.computerscience.pfsociety.plasticfee.data.dto.UserDto;
 import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
@@ -53,7 +54,8 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
             responseObserver.onNext(toProtoUser(userDto));
             responseObserver.onCompleted();
         }catch (Exception e){
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("create user error").withCause(e).asRuntimeException());
+            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("username already present").withCause(e).asRuntimeException());
+            return;
         }
 
         LOGGER.info("user {} creation OK!",request.getUsername());
@@ -144,9 +146,85 @@ public class ProposalGrpcServiceImpl extends ProposalServiceGrpc.ProposalService
 
     }
 
+    @Override
+    public void retrieveAllProposals(RetrieveAllProposalsRequest request, StreamObserver<RetrieveAllProposalsResponse> responseObserver) {
+
+        List<ProposalDto> proposals = proposalService.retrieveAllProposals();
+
+        RetrieveAllProposalsResponse.Builder responseBuilder = RetrieveAllProposalsResponse.newBuilder();
+
+        for (ProposalDto prop: proposals){
+            responseBuilder.addProposals(toProtoProposal(prop));
+        }
+
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void retrieveAllExpiredProposals(RetrieveAllExpiredProposalsRequest request, StreamObserver<RetrieveAllExpiredProposalsResponse> responseObserver) {
+
+        List<ProposalDto> proposals = proposalService.retrieveAllExpiredProposals();
+
+        RetrieveAllExpiredProposalsResponse.Builder responseBuilder = RetrieveAllExpiredProposalsResponse.newBuilder();
+
+        for (ProposalDto prop: proposals){
+            responseBuilder.addProposals(toProtoProposal(prop));
+        }
+
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+
+    }
+
+    @Override
+    public void retrievePersonalProposals(RetrievePersonalProposalsRequest request, StreamObserver<RetrievePersonalProposalsResponse> responseObserver) {
+        List<ProposalDto> proposals = proposalService.retrievePersonalProposals(request.getUsername());
+
+        RetrievePersonalProposalsResponse.Builder responseBuilder = RetrievePersonalProposalsResponse.newBuilder();
+
+        for (ProposalDto prop: proposals){
+            responseBuilder.addProposals(toProtoProposal(prop));
+        }
+
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+
+    }
+
+    @Override
+    public void updateProposalExpirationDate(ExpirationUpdateRequest request, StreamObserver<ExpirationUpdateResponse> responseObserver) {
+
+        try {
+            ProposalDto proposalDto = proposalService.retrieveActiveProposalByTitle(request.getProposalTitle());
+
+            if (!request.getUsername().equals(proposalDto.getCreator().getUsername())){
+                responseObserver.onNext(ExpirationUpdateResponse.newBuilder().setResponse("Cant' modify other user's proposal").build());
+                responseObserver.onCompleted();
+                LOGGER.error("Can't modify other user's proposal");
+                return;
+            }
+
+            proposalService.updateProposalExpirationDate(fromProtoToLocalDate(request.getNewExpiration()),
+                    request.getProposalTitle());
+
+            responseObserver.onNext(ExpirationUpdateResponse.newBuilder()
+                    .setResponse("The validity period of the proposal has been successfully updated").build());
+            responseObserver.onCompleted();
+
+            LOGGER.info("The validity period of the proposal with title {} has been successfully updated",
+                    request.getProposalTitle());
+
+        } catch(ProposalByTitleNotFoundOnRetrieveException e){
+            responseObserver.onError(Status.NOT_FOUND.withDescription("create proposal error").asRuntimeException());
+            LOGGER.error("No proposal found with the specified title");
+        }
+    }
+
     private static User toProtoUser(UserDto userDto) {
         return User.newBuilder()
                 .setId(userDto.getId())
+                .setPassword(userDto.getPassword())
                 .setUsername(userDto.getUsername())
                 .build();
     }
