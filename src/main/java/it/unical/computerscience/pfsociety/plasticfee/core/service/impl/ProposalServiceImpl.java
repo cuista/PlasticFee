@@ -1,5 +1,6 @@
 package it.unical.computerscience.pfsociety.plasticfee.core.service.impl;
 
+import it.unical.computerscience.pfsociety.plasticfee.core.service.UserService;
 import it.unical.computerscience.pfsociety.plasticfee.core.service.exception.ProposalByTitleNotFoundOnRetrieveException;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.ProposalDao;
 import it.unical.computerscience.pfsociety.plasticfee.data.dao.UserDao;
@@ -10,6 +11,7 @@ import it.unical.computerscience.pfsociety.plasticfee.data.entity.ProposalEntity
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.UserEntity;
 import it.unical.computerscience.pfsociety.plasticfee.core.service.ProposalService;
 import it.unical.computerscience.pfsociety.plasticfee.data.entity.VoteEntity;
+import it.unical.computerscience.pfsociety.plasticfee.protobuf.proposal.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class ProposalServiceImpl implements ProposalService {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ProposalDao proposalDao;
@@ -84,12 +89,19 @@ public class ProposalServiceImpl implements ProposalService {
             if (proposalDto.getExpirationDate().compareTo(LocalDate.now())<0){
                 proposalDao.setProposalAsExpired(proposalDto.getId());
 
-                /*for (VoteDto voteDto: proposalDto.getVotesList()){
+                if(proposalDto.getVotesInFavorList().size()>proposalDto.getVotesAgainstList().size()) {
+                    userService.updateUserReputation(proposalDto.getCreator().getUsername(), proposalDto.getReputationReward());
+                    for (VoteDto voteDto : proposalDto.getVotesList()) {
+                        userService.updateUserReputation(voteDto.getUser().getUsername(), voteDto.getInFavor() ? proposalDto.getReputationReward() : (proposalDto.getReputationReward() * -1)); //FIXME gestire se non esiste piu' l'utente
+                    }
+                }
+                else {
+                    userService.updateUserReputation(proposalDto.getCreator().getUsername(), proposalDto.getReputationReward()*-1);
+                    for (VoteDto voteDto : proposalDto.getVotesList()) {
+                        userService.updateUserReputation(voteDto.getUser().getUsername(), voteDto.getInFavor() ? (proposalDto.getReputationReward() * -1) : proposalDto.getReputationReward()); //FIXME gestire se non esiste piu' l'utente
+                    }
+                }
 
-                    UserEntity userEntity = userDao.findById(voteDto.getUser().getId()).get(); //FIXME gestire se non esiste piu' l'utente
-
-
-                }*/
             }
         }
 

@@ -36,7 +36,7 @@ public class VoteServiceImpl implements VoteService {
             return false;
 
         UserEntity userEntity= userDao.findByUsername(username).orElseThrow(() -> new UserByUsernameNotFoundOnRetrieveException(username));
-        if (voteDao.findByProposalAndUser(proposalEntity, userEntity).isEmpty()) {
+        if (voteDao.findByProposalAndUser(proposalEntity, userEntity).isEmpty() && proposalEntity.getProposalCreator().getId()!=userEntity.getId()) {
 
             VoteEntity voteEntity = new VoteEntity();
             voteEntity.setProposal(proposalEntity);

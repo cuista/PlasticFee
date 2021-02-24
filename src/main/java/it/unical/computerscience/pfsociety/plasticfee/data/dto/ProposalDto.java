@@ -100,4 +100,23 @@ public class ProposalDto implements Serializable {
     public void setVotesList(Set<VoteDto> votesList) {
         this.votesList = votesList;
     }
+
+    public Set<VoteDto> getVotesInFavorList() {
+        Set<VoteDto> votesInFavor=new HashSet<>();
+        for (VoteDto voteDto:votesList) {
+            if(voteDto.getInFavor())
+                votesInFavor.add(voteDto);
+        }
+        return votesInFavor;
+    }
+
+    public Set<VoteDto> getVotesAgainstList() {
+        Set<VoteDto> votesAgainst=new HashSet<>();
+        for (VoteDto voteDto:votesList)
+        {
+            if(!voteDto.getInFavor())
+                votesAgainst.add(voteDto);
+        }
+        return votesAgainst;
+    }
 }
