@@ -5,4 +5,4 @@ Every single contribution has the same importance as the others, so that every u
 
 For the technical description of the project, please refer to this link:  https://docs.google.com/document/d/1Q5buSzTbnjkho29og4J6bAkZpqNBMLDVXFEBG5bhDMg/edit?usp=sharing
 
-if you don't like technicisms, refer instead to this link: https://docs.google.com/presentation/d/16k9FapZSbFe9hyxrK6G2jVeaCE_0c1KZUboa880W2Jo/edit?usp=sharing
+For a general overview without technical details, refer instead to this link: https://docs.google.com/presentation/d/16k9FapZSbFe9hyxrK6G2jVeaCE_0c1KZUboa880W2Jo/edit?usp=sharing
